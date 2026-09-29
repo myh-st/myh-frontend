@@ -1,0 +1,4 @@
+interface:
+  display_name: "MYH Frontend"
+  short_description: "Build calm, production-grade enterprise frontends"
+  default_prompt: "Use $myh-frontend to inspect this frontend, improve the UX and visual hierarchy, implement the requested changes in the existing stack, and verify responsive and accessibility behavior."
