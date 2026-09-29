@@ -1,36 +1,38 @@
 # MYH Frontend
 
-A reusable Agent Skill for building calm, modern, production-grade enterprise frontends, especially AI, document, data, and operations products.
+A reusable Agent Skill for building calm, modern, production-grade enterprise frontends for AI, data, operations, workflow, and internal business applications.
 
-The skill is intentionally framework-aware but framework-neutral: it inspects the existing application first and improves the current stack instead of rewriting it for aesthetics.
+The skill is framework-aware but framework-neutral: it inspects the existing application first, preserves working product contracts, and improves the current stack instead of rewriting it for aesthetics.
 
-## Preview
+## UI preview
 
-These are illustrative UI directions for the kinds of enterprise surfaces this skill is designed to produce. Click any image to open the larger preview.
+The examples below use **Sawasdee Hub**, a fictional product created only to demonstrate the design direction. They are intentionally shown as separate full-page concepts so you can inspect each surface clearly.
 
-### Enterprise AI dashboard
+### 1. Login portal
 
-<a href="assets/preview-dashboard.webp">
-  <img src="assets/preview-dashboard.webp" alt="MYH Frontend enterprise AI dashboard with a Thai-inspired AI agent" width="100%">
+Secure enterprise authentication with strong branding, SSO-ready controls, a calm Thai-inspired visual identity, and a dedicated AI-agent mascot.
+
+<a href="assets/showcase-login.svg">
+  <img src="assets/showcase-login.svg" alt="MYH Frontend login portal concept for the fictional Sawasdee Hub product" width="100%">
 </a>
 
-### Login portal
+### 2. Home dashboard
 
-<a href="assets/preview-login.webp">
-  <img src="assets/preview-login.webp" alt="MYH Frontend enterprise login portal" width="100%">
+A task-first operational dashboard: clear next actions, useful KPIs, recent activity, approvals, workload context, and an AI entry point without turning the screen into a card wall.
+
+<a href="assets/showcase-home.svg">
+  <img src="assets/showcase-home.svg" alt="MYH Frontend home dashboard concept for the fictional Sawasdee Hub product" width="100%">
 </a>
 
-### Workflow builder
+### 3. AI chat workspace
 
-<a href="assets/preview-workflow-builder.webp">
-  <img src="assets/preview-workflow-builder.webp" alt="MYH Frontend visual workflow builder" width="100%">
+Enterprise chat is more than a message box. This concept separates conversation, history, structured AI results, evidence, scope, quality, and guardrails into a single inspectable workspace.
+
+<a href="assets/showcase-chat.svg">
+  <img src="assets/showcase-chat.svg" alt="MYH Frontend AI chat workspace concept for the fictional Sawasdee Hub product" width="100%">
 </a>
 
-### Analytics dashboard
-
-<a href="assets/preview-analytics.webp">
-  <img src="assets/preview-analytics.webp" alt="MYH Frontend analytics dashboard" width="100%">
-</a>
+> Click any preview to open the full-resolution vector image.
 
 ## What it optimizes for
 
@@ -50,7 +52,7 @@ mkdir -p .agents/skills
 cp -R .agents/skills/myh-frontend <target-repo>/.agents/skills/
 ```
 
-For clients that still require a vendor-specific skills directory, copy the same `myh-frontend` folder to that client's supported skill path. Keep one canonical source of the skill to avoid drift.
+For clients that require a vendor-specific skills directory, copy the same `myh-frontend` folder to that client's supported skill path. Keep one canonical source of the skill to avoid drift.
 
 ## Use
 
