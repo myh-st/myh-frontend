@@ -4,6 +4,34 @@ A reusable Agent Skill for building calm, modern, production-grade enterprise fr
 
 The skill is intentionally framework-aware but framework-neutral: it inspects the existing application first and improves the current stack instead of rewriting it for aesthetics.
 
+## Preview
+
+These are illustrative UI directions for the kinds of enterprise surfaces this skill is designed to produce. Click any image to open the larger preview.
+
+### Enterprise AI dashboard
+
+<a href="assets/preview-dashboard.webp">
+  <img src="assets/preview-dashboard.webp" alt="MYH Frontend enterprise AI dashboard with a Thai-inspired AI agent" width="100%">
+</a>
+
+### Login portal
+
+<a href="assets/preview-login.webp">
+  <img src="assets/preview-login.webp" alt="MYH Frontend enterprise login portal" width="100%">
+</a>
+
+### Workflow builder
+
+<a href="assets/preview-workflow-builder.webp">
+  <img src="assets/preview-workflow-builder.webp" alt="MYH Frontend visual workflow builder" width="100%">
+</a>
+
+### Analytics dashboard
+
+<a href="assets/preview-analytics.webp">
+  <img src="assets/preview-analytics.webp" alt="MYH Frontend analytics dashboard" width="100%">
+</a>
+
 ## What it optimizes for
 
 - Clear task hierarchy instead of card walls
