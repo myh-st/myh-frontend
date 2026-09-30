@@ -75,7 +75,7 @@ The repository includes a cross-domain evaluation suite under [`evals/`](evals/)
 
 It covers hospital operations, banking risk, DevOps incident response, HR onboarding, retail analytics, enterprise AI agents, connector management, and government service casework. The benchmark scores task hierarchy, domain adaptation, contract preservation, state design, responsiveness, accessibility, visual consistency, maintainability, and AI governance where applicable.
 
-The suite deliberately uses **golden principles, not golden screenshots**. A strong result should fit its domain rather than copy the Sawasdee Hub layout.
+The suite deliberately uses **golden principles, not golden screenshots**. A strong result should fit its domain rather than copy the Sawasdee Hub layout. A ready-to-run Claude Code portability prompt is included at [`evals/CLAUDE_CODE_VALIDATION_PROMPT.md`](evals/CLAUDE_CODE_VALIDATION_PROMPT.md).
 
 ```bash
 python evals/score.py evals/results/<result>.json
