@@ -9,28 +9,27 @@ The skill is framework-aware but framework-neutral: it inspects the existing app
 The examples below use **Sawasdee Hub**, a fictional product created only to demonstrate the design direction. They are intentionally shown as separate full-page concepts so you can inspect each surface clearly.
 
 ### 1. Login portal
+<img width="768" height="512" alt="login-portal" src="https://github.com/user-attachments/assets/0deb2b5f-9469-46ae-87c7-c05cbbdf3d24" />
 
 Secure enterprise authentication with strong branding, SSO-ready controls, a calm Thai-inspired visual identity, and a dedicated AI-agent mascot.
 
-<a href="assets/showcase-login.svg">
-  <img src="assets/showcase-login.svg" alt="MYH Frontend login portal concept for the fictional Sawasdee Hub product" width="100%">
-</a>
-
 ### 2. Home dashboard
+<img width="768" height="512" alt="home-dashboard" src="https://github.com/user-attachments/assets/2babbeb6-f329-45c7-8ce9-f1357606ea25" />
 
 A task-first operational dashboard: clear next actions, useful KPIs, recent activity, approvals, workload context, and an AI entry point without turning the screen into a card wall.
 
-<a href="assets/showcase-home.svg">
-  <img src="assets/showcase-home.svg" alt="MYH Frontend home dashboard concept for the fictional Sawasdee Hub product" width="100%">
-</a>
-
 ### 3. AI chat workspace
+<img width="768" height="512" alt="ai-chat-workspace" src="https://github.com/user-attachments/assets/d4b878fa-c386-41fc-a1c3-6e951a6bb753" />
 
 Enterprise chat is more than a message box. This concept separates conversation, history, structured AI results, evidence, scope, quality, and guardrails into a single inspectable workspace.
 
-<a href="assets/showcase-chat.svg">
-  <img src="assets/showcase-chat.svg" alt="MYH Frontend AI chat workspace concept for the fictional Sawasdee Hub product" width="100%">
-</a>
+### 4. Connectors
+
+<img width="768" height="512" alt="connectors" src="https://github.com/user-attachments/assets/24f10dfb-658d-433d-afaf-cddaa432da9c" />
+
+Connect your enterprise tools and data sources securely, so AI can access the right context and take governed actions across your workflows.
+
+
 
 > Click any preview to open the full-resolution vector image.
 
