@@ -1,0 +1,218 @@
+{
+ "case": "ai-agent-workspace",
+ "variant": "control",
+ "agent": "Claude Code 2.1.285 headless (claude -p), model claude-opus-5-5, effort=high (inherited CLAUDE_EFFORT)",
+ "scores": {
+  "task_hierarchy": 3,
+  "domain_adaptation": 3,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 3,
+  "accessibility": 3,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright: 375/768/1024/1440 overflow on primary+detail(+extra) routes",
+   "playwright: 30-step Tab walk at 1440 and 375 (primary, detail)",
+   "playwright: prefers-reduced-motion=reduce animation check",
+   "axe-core WCAG 2 A/AA scan",
+   "playwright: mock scenarios slow/empty/error/forbidden/partial on primary+detail",
+   "network: requests issued on page load"
+  ],
+  "screenshots": [
+   "screenshots/ai-agent-workspace/control-primary-375.jpg",
+   "screenshots/ai-agent-workspace/control-primary-768.jpg",
+   "screenshots/ai-agent-workspace/control-primary-1024.jpg",
+   "screenshots/ai-agent-workspace/control-primary-1440.jpg"
+  ],
+  "notes": "Both builds keep the backend contract, routes and selectors, make no non-GET calls on load, use server allowedActions for approvals, and cover scope, evidence, cost, per-action approval, retry and receipts, so neither triggers a critical failure. Y better matches the case's key transfer expectation. It puts execution state in a dedicated Run inspector (mobile Run pane) that the conversation links to, and gates each mutation through an accessible dialog. X interleaves structured run cards into the chat transcript, which buries the approval gate below the fold. Y is also stronger on accessibility (axe clean, skip link, focus-trapped dialogs, hidden drawers removed from the tab order) and responsive recomposition. X's advantages are a stricter review rule (high-risk OR irreversible), draft recovery on a failed first send, and a leaner codebase. Y's weaknesses are misleading slow-load copy and a cramped diff table in the narrow inspector."
+ },
+ "phase": "baseline",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Home is question-first (StartView composer), but on /c/c-102 the approval decision sits inside a long inline RunCard below steps and the 'answer so far' (ConversationView.tsx items loop), below the fold at every width (detail-1440/1024/375.png), while the always-on scope rail competes for attention at 1440.",
+  "domain_adaptation": "The IA is history sidebar, chat thread and scope rail. Execution is structured (steps, approvals, receipt) but embedded as RunCard between messages rather than in a separately inspectable surface, which only partly meets 'conversation is for intent; execution separately inspectable'.",
+  "contract_preservation": "No src/api or src/mock changes (contract_files_changed=[]). Routes / and /c/:id are kept, the three test selectors plus composer-input/send-button are kept, existing tests are untouched and new tests are in a new workspace.test.tsx. createConversation still sends {title}; the title comes from the first line of the question.",
+  "interaction_state": "It has skeletons, an empty state, a total-outage state with retry, a not-found state, and STALE_VERSION/INVALID_STATE notices that re-poll (RunCard mutate finally→setPollNonce). It restores the draft when post fails after create (StartView) and blocks the composer while a run is active. It has an inline cancel confirm, a reject reason, and retry with a receipt. Success notices appear only after the server response.",
+  "responsive": "No page overflow at any width. The scope rail becomes a drawer below 1180 and history becomes a drawer below 800. At 375 the composer and blocked banner take about 40% of the height, so the run/approval thread scrolls in a small region (detail-375.png). The off-canvas drawer's box-shadow shows at the right edge at 375/768/1024 (primary-375.png).",
+  "accessibility": "Global :focus-visible outline and 28-29 named stops, with labelled composer, diff table caption and sr-only step status. However the off-canvas drawers are only translateX'd (no visibility/inert), so hidden scope content stays in the tab order (detail@375 'aside Current scope' inViewportX=false). axe reports serious scrollable-region-focusable on both pages. Reduced-motion only disables the step pulse.",
+  "visual_consistency": "Calm, restrained tokens with light/dark support, tabular numerics and few decorative cards. The topbar with plain-text 'History'/'Scope' buttons is a bit bare, and the leaking drawer shadow is a small polish defect.",
+  "maintainability": "About 2.8k LOC split into focused components (ActionCard, RunCard, Receipt, ScopePanel, Citations) with a small useResource hook, an errors mapper and mutable poll timing for tests. RunCard (270 lines) mixes polling, mutation and rendering.",
+  "ai_governance": "Scope rail lists read-only sources with freshness, write tools marked approval-required, policy and budget. Citations are numbered and expandable, and uncited answers are labelled unverified. Actions are decided one at a time with a before/after diff, risk, reversibility and cost. A 'reviewed' tick is required for high-risk OR irreversible actions, and controls come from server allowedActions. The receipt shows the external ref, who decided, and actual vs estimated cost. 'Allow Atlas to propose changes' is off by default."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "history sidebar + chat thread with inline structured run cards + persistent scope rail",
+  "justified_patterns": [
+   "per-action approval cards with field diff and risk",
+   "run step timeline with durations",
+   "receipt table with external refs",
+   "scope rail with source freshness and write-tool marking",
+   "budget meter tied to billable runs",
+   "attention count in history"
+  ],
+  "suspicious_patterns": [
+   "generic three-column chat shell (sidebar + chat + right rail)",
+   "execution state interleaved into the chat transcript rather than a distinct execution surface"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Explicit review checkbox covers both high-risk and irreversible actions",
+  "Draft is preserved when the conversation is created but the question fails to send",
+  "Polling uses a timeout chain with slower cadence while awaiting approval and stops at terminal states",
+  "Receipt headline clearly states partial failure and 'not rolled back'",
+  "No non-GET requests on load (loadRequests GET only)"
+ ],
+ "defects": [
+  "Approval gate buried below the fold inside the transcript's run card",
+  "Hidden off-canvas drawers stay keyboard-focusable; axe scrollable-region-focusable (serious)",
+  "Drawer shadow bleeds onto the right edge at 375/768/1024",
+  "Cramped conversation viewport at 375 px because the composer, blocked banner and hint take much of the height",
+  "Low-risk actions have no in-context 'last decision starts execution' warning"
+ ],
+ "objective_checks": {
+  "checks": {
+   "lint": "pass",
+   "typecheck": "pass",
+   "test": "pass",
+   "build": "pass"
+  },
+  "diffstat": " 19 files changed, 2749 insertions(+), 108 deletions(-)",
+  "backend_contract_files_changed": [],
+  "existing_tests_modified": [],
+  "original_test_selectors_present": {
+   "conversation-item": true,
+   "message": true,
+   "proposed-actions": true
+  },
+  "test_cases_total": 17,
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "keyboard_tab_walk": {
+   "primary@1440": {
+    "stops": 28,
+    "focus_visible": 28,
+    "unnamed": 0
+   },
+   "primary@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   }
+  },
+  "reduced_motion": {
+   "primary": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   },
+   "detail": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   }
+  },
+  "axe_wcag_a_aa_violations": {
+   "primary": [
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "nodes": 1
+    }
+   ],
+   "detail": [
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "nodes": 1
+    }
+   ]
+  },
+  "non_get_requests_on_page_load": [],
+  "scenario_live_regions": {
+   "primary:slow": 0,
+   "primary:empty": 0,
+   "primary:error": 0,
+   "primary:forbidden": 0,
+   "primary:partial": 2,
+   "detail:slow": 1,
+   "detail:empty": 1,
+   "detail:error": 0,
+   "detail:forbidden": 4,
+   "detail:partial": 7
+  },
+  "source_signals": {
+   "prefers_reduced_motion": 1,
+   "focus_visible": 1,
+   "aria_live": 2,
+   "role_status_alert": 4,
+   "dialog": 0,
+   "transition_all": 0,
+   "emoji_ui": 0,
+   "media_queries": 4,
+   "lang_th": 0,
+   "aria_sort_or_caption": 1,
+   "mutation_confirm": 0
+  },
+  "console_errors": []
+ },
+ "session": {
+  "model": "claude-opus-5-5",
+  "cost_usd": 3.5834031999999993,
+  "num_turns": 57,
+  "wall_seconds": 810,
+  "timed_out": false,
+  "tool_counts": {
+   "Bash": 42,
+   "Read": 12
+  },
+  "skill_file_refs": []
+ },
+ "score_py": {
+  "score": 73.0,
+  "verdict": "FAIL",
+  "stdout": "case: ai-agent-workspace\nvariant: control\nscore: 73.00/100\nverdict: FAIL"
+ }
+}

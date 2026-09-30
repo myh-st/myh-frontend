@@ -1,0 +1,217 @@
+{
+ "case": "banking-risk-console",
+ "variant": "myh",
+ "agent": "Claude Code 2.1.285 headless (claude -p), model claude-opus-5-5, effort=high (inherited CLAUDE_EFFORT)",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright: 375/768/1024/1440 overflow on primary+detail(+extra) routes",
+   "playwright: 30-step Tab walk at 1440 and 375 (primary, detail)",
+   "playwright: prefers-reduced-motion=reduce animation check",
+   "axe-core WCAG 2 A/AA scan",
+   "playwright: mock scenarios slow/empty/error/forbidden/partial on primary+detail",
+   "network: requests issued on page load"
+  ],
+  "screenshots": [
+   "screenshots/banking-risk-console/myh-primary-375.jpg",
+   "screenshots/banking-risk-console/myh-primary-768.jpg",
+   "screenshots/banking-risk-console/myh-primary-1024.jpg",
+   "screenshots/banking-risk-console/myh-primary-1440.jpg"
+  ],
+  "notes": "Both builds use a domain-correct queue plus case workspace, keep src/api and src/mock and all test selectors, gate actions on server allowedActions, make no mutations on load, and handle every scenario state, including draft-preserving stale recovery. Y is stronger on governed actions: its modal approve dialog shows scope, impact and the requester's reason, requires an acknowledgement and shows the receipt. Y also recomposes tables into cards on mobile, whereas X keeps desktop tables in horizontal scrollers that hide key columns at 375 and 768. X has a sturdier focus outline and cleaner component boundaries, but it fails axe color-contrast. Y's sticky internally scrolling aside and very long mobile pages are its main weaknesses. Overall Y is modestly ahead and neither build triggers a critical failure."
+ },
+ "phase": "baseline",
+ "blind_label": "Y",
+ "scorer_rationale": {
+  "task_hierarchy": "The main column holds evidence and the audit trail, and a sticky 380px aside shows the freeze panel first (with scope and impact) and the decision second. On tablet and phone the actions drop to the bottom, mitigated by a 'Jump to decision and freeze actions' link. The sticky aside uses its own internal scroll, and in the 1440 capture the decision panel is clipped inside it.",
+  "domain_adaptation": "It has a queue plus a case workspace, risk-sorted entities with type icons, account active/frozen state, flag reasons as sub-rows, and an audit timeline in the main evidence flow. It avoids a chat layout and KPI filler.",
+  "contract_preservation": "No changes under src/api or src/mock, and all four test ids and the routes are kept. Actions are gated on allowedActions, and role or status is used only to explain disabled actions ('Explains (never decides)'). src/App.test.tsx was modified, but the original severity-filter test is kept verbatim inside a describe block.",
+  "interaction_state": "It covers a skeleton loading state, separate empty-filtered and queue-clear states, retryable load errors, not-found, and read-only reasons on each action. The partial banner and per-factor 'can't verify now' warnings are present. STALE_VERSION keeps the draft and reloads the case, audit and session, then lists what changed. Dialog states include 'no longer approvable'. The success notice appears only after the server responds, with the receipt.",
+  "responsive": "Tables become stacked labelled cards below 860px, the aside becomes a grid at ≤1023px, and there is no overflow at any width with 0 small targets on the queue. Pages are very long on phones (the queue is about 7.6k px at 375), and the nested scroll in the sticky aside is awkward.",
+  "accessibility": "Modal dialogs have a focus trap, Escape and focus return, and invalid fields get focus with aria-invalid and error ids. Icons have text labels, reduced motion is handled globally, and all tab stops are named. The focus ring is a 35%-alpha box-shadow (visible but faint), and axe reports scrollable-region-focusable on the sticky aside.",
+  "visual_consistency": "Coherent light enterprise styling with one consistent icon family and tone badges. Stacked mobile cards are verbose, and the icon use is heavier than needed but stays restrained.",
+  "maintainability": "It has reusable Dialog, Icon, Section and Banner primitives, useResource with keepPrevious and set, and errors.ts. FreezePanel is large (568 lines), and useResource suppresses the exhaustive-deps lint rule.",
+  "ai_governance": "The hypothesis is labelled 'AI-generated · advisory only' and states that it 'does not record a decision or trigger any action'. It flags transactions after the generation time and marks device and IP factors that can't be verified. The approve dialog shows accounts, impact, the requester's reason and an irreversibility note, requires an acknowledgement checkbox before approving, and shows the server receipt with requester and approver. The request dialog warns when no decision has been recorded."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "alert queue table (stacked cards on mobile) -> case workspace (evidence+audit column + sticky freeze/decision aside)",
+  "justified_patterns": [
+   "severity/confidence triage with URL filters",
+   "modal confirmation dialogs for freeze request, approve and reject",
+   "acknowledgement checkbox before an irreversible freeze",
+   "change summary after a stale reload",
+   "audit timeline alongside evidence"
+  ],
+  "suspicious_patterns": [
+   "heavy decorative icon set on every badge and section",
+   "sticky aside with internal scroll",
+   "AI hypothesis placed first above authoritative transaction evidence"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Best-in-class approve dialog (scope, impact, requester reason, acknowledgement, receipt)",
+  "Stale reload lists what changed and also refreshes permissions",
+  "True responsive recomposition of tables into labelled cards",
+  "Clean axe contrast result",
+  "Per-factor unverifiable warnings when device intelligence is down"
+ ],
+ "defects": [
+  "Sticky aside with internal scroll clips the decision panel and triggers an axe scrollable-region warning",
+  "Actions at the very bottom on tablet and phone (jump link only)",
+  "Faint box-shadow focus ring",
+  "Very long mobile pages from verbose stacked cards",
+  "Existing test file edited, though the original assertions are preserved"
+ ],
+ "objective_checks": {
+  "checks": {
+   "lint": "pass",
+   "typecheck": "pass",
+   "test": "pass",
+   "build": "pass"
+  },
+  "diffstat": " 18 files changed, 3770 insertions(+), 136 deletions(-)",
+  "backend_contract_files_changed": [],
+  "existing_tests_modified": [
+   "M\tsrc/App.test.tsx"
+  ],
+  "original_test_selectors_present": {
+   "alert-row": true,
+   "severity-filter": true
+  },
+  "test_cases_total": 19,
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "keyboard_tab_walk": {
+   "primary@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "primary@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@1440": {
+    "stops": 28,
+    "focus_visible": 28,
+    "unnamed": 0
+   },
+   "detail@375": {
+    "stops": 28,
+    "focus_visible": 28,
+    "unnamed": 0
+   }
+  },
+  "reduced_motion": {
+   "primary": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   },
+   "detail": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   }
+  },
+  "axe_wcag_a_aa_violations": {
+   "primary": [],
+   "detail": [
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "nodes": 1
+    }
+   ]
+  },
+  "non_get_requests_on_page_load": [],
+  "scenario_live_regions": {
+   "primary:slow": 1,
+   "primary:empty": 1,
+   "primary:error": 2,
+   "primary:forbidden": 1,
+   "primary:partial": 1,
+   "detail:slow": 1,
+   "detail:empty": 2,
+   "detail:error": 1,
+   "detail:forbidden": 2,
+   "detail:partial": 2
+  },
+  "source_signals": {
+   "prefers_reduced_motion": 2,
+   "focus_visible": 7,
+   "aria_live": 4,
+   "role_status_alert": 9,
+   "dialog": 1,
+   "transition_all": 0,
+   "emoji_ui": 0,
+   "media_queries": 5,
+   "lang_th": 0,
+   "aria_sort_or_caption": 2,
+   "mutation_confirm": 0
+  },
+  "console_errors": []
+ },
+ "session": {
+  "model": "claude-opus-5-5",
+  "cost_usd": 2.9914249999999996,
+  "num_turns": 38,
+  "wall_seconds": 656,
+  "timed_out": false,
+  "tool_counts": {
+   "Skill": 1,
+   "Bash": 25,
+   "Write": 1,
+   "Read": 6
+  },
+  "skill_file_refs": [
+   "Bash"
+  ]
+ },
+ "score_py": {
+  "score": 87.0,
+  "verdict": "PASS",
+  "stdout": "case: banking-risk-console\nvariant: myh\nscore: 87.00/100\nverdict: PASS"
+ }
+}

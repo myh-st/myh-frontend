@@ -1,0 +1,215 @@
+{
+ "case": "connector-marketplace",
+ "variant": "myh",
+ "agent": "Claude Code 2.1.285 headless (claude -p), model claude-opus-5-5, effort=high (inherited CLAUDE_EFFORT)",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 5,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright: 375/768/1024/1440 overflow on primary+detail(+extra) routes",
+   "playwright: 30-step Tab walk at 1440 and 375 (primary, detail)",
+   "playwright: prefers-reduced-motion=reduce animation check",
+   "axe-core WCAG 2 A/AA scan",
+   "playwright: mock scenarios slow/empty/error/forbidden/partial on primary+detail",
+   "network: requests issued on page load"
+  ],
+  "screenshots": [
+   "screenshots/connector-marketplace/myh-primary-375.jpg",
+   "screenshots/connector-marketplace/myh-primary-768.jpg",
+   "screenshots/connector-marketplace/myh-primary-1024.jpg",
+   "screenshots/connector-marketplace/myh-primary-1440.jpg"
+  ],
+  "notes": "Both builds use the right catalog + connection-health model, keep the backend contract and selectors intact, remove the legacy secret echo and one-click Remove, and gate actions on server allowedActions; neither triggers a critical failure. X is more complete in governed-action behaviour: its disconnect confirm waits for impact, it lists scopes with labels and read/write, it has a focus-trapped dialog with Cancel as default focus, and it shows per-row next-step CTAs. Y offers a nicer 'Needs attention' triage filter, dark mode and shared credential inputs, but lets the user confirm disconnect before impact loads. X recomposes rows into labelled cards on mobile, while Y's stacked cells lose their headers at 375 and are cramped at 768. Y also handles failures less cleanly: one failed request blanks the whole page and the error scenario shows a misleading empty catalog. Overall X is the stronger, more production-ready result; Y is solid but a notch weaker on responsive, accessibility and governance."
+ },
+ "phase": "baseline",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Connection-health table comes first. Each row carries a state-derived next-step CTA (Reauthorize/Reconnect/Review issue/Manage, ConnectionsPage.tsx nextStep()), and the detail page highlights the primary action while pushing Disconnect… to the far end. On mobile the add form sits below all 14 catalog cards, so it is far from reach.",
+  "domain_adaptation": "The layout is catalog + connection-health, as the task asks: status-filtered table, category/search catalog with a sticky add form, and a detail page with issue panel, health and access. There are no KPI or dashboard surfaces. Catalog cards are used only inside the catalog.",
+  "contract_preservation": "src/api and src/mock are untouched, existing tests are unchanged, and all original selectors are kept (evidence.json). Routes are unchanged. Row and detail actions are gated on server allowedActions. The 'Saved key' secret echo is removed and secret inputs use type=password/new-password.",
+  "interaction_state": "Every state is covered: per-section skeletons, empty and no-match states, per-section error with Try again, forbidden view-only notice, partial dataStatus badges and notice, STALE_VERSION with 'Reload connection', a 404 state, inline test results with remediation, an OAuth hand-off with expiry, and disconnect/rotate receipts. One small flaw: filter chips show 'All 0…' counts while loading or in error.",
+  "responsive": "No overflow at any width (verify.json). Below 900px the table becomes labelled grid cards (data-label::before), and at 560px action buttons go full width. In the partial scenario at 1024 the extra health badge pushes the action column to the right edge and it is visibly clipped.",
+  "accessibility": "axe reports no violations. All 30/25 Tab stops show visible focus and none are unnamed. Status uses icon + text and the direction glyph has a label. The Dialog traps focus, handles Escape unless busy, autofocuses Cancel and returns focus. There are aria-live outcome regions, aria-invalid/describedby field errors, and a global reduced-motion rule.",
+  "visual_consistency": "Calm enterprise styling with one token set, one stroke-icon family and consistent badge/notice language. Severity is shown by a left border on problem rows. The page is long and card-heavy because the full catalog grid is always shown.",
+  "maintainability": "Clean split into ui/ (pages, AddConnectionForm, Dialog, components, format, icons) and App.tsx now holds only routes. A new test file adds 15 cases. Credential field rendering is duplicated between the add form and RotateDialog, the useLoad hook disables exhaustive-deps, and the CSS file is large (~1.2k lines).",
+  "ai_governance": "The disconnect dialog loads /impact and lists the exact granted scopes with labels and read/write, the sync jobs that stop, dependent workflows, retention days and credential purge. It warns when impact is incomplete (unavailableSources or fetch failure), keeps the confirm button disabled until impact resolves, and shows a server-confirmed receipt with the revoked scope IDs. Mutations only happen on explicit clicks and loadRequests are GET-only."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "connection-health table (status filters + search) above a category-filtered connector catalog with sticky add form; detail page = action bar + issue panel + health/access panels + activity timeline",
+  "justified_patterns": [
+   "connector catalog cards (domain is a catalog)",
+   "status filter chips with counts",
+   "per-row state-derived next-step CTA",
+   "impact-scoped disconnect confirmation dialog",
+   "write-only credential inputs + rotate dialog",
+   "OAuth 'Continue to vendor' link with expiry instead of popup"
+  ],
+  "suspicious_patterns": [
+   "letter-avatar logos on catalog cards (mild decoration)",
+   "'N connections need attention' banner is borderline summary-metric but tied to the task"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Removes the legacy 'Saved key' secret echo and the one-click Remove; the new tests assert the secret never appears in the DOM",
+  "Disconnect confirm stays disabled until impact is loaded or has failed; the dialog has a focus trap, safe default focus on Cancel and a receipt with revoked scopes",
+  "Responsive table-to-labelled-card recomposition",
+  "Per-section error/retry so a failed catalog doesn't blank connections"
+ ],
+ "defects": [
+  "Filter chips show zero counts during loading/error",
+  "Action column clipped at 1024 when the partial-health badges widen the status column",
+  "Add form is far below the 14-card catalog on mobile/tablet",
+  "Credential input rendering is duplicated between the add form and the rotate dialog"
+ ],
+ "objective_checks": {
+  "checks": {
+   "lint": "pass",
+   "typecheck": "pass",
+   "test": "pass",
+   "build": "pass"
+  },
+  "diffstat": " 11 files changed, 3215 insertions(+), 152 deletions(-)",
+  "backend_contract_files_changed": [],
+  "existing_tests_modified": [],
+  "original_test_selectors_present": {
+   "add-endpoint": true,
+   "add-name": true,
+   "add-scopes": true,
+   "connection-row": true,
+   "connector-type-select": true,
+   "cred-apiKey": true,
+   "cred-headerName": true
+  },
+  "test_cases_total": 23,
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "keyboard_tab_walk": {
+   "primary@1440": {
+    "stops": 30,
+    "focus_visible": 30,
+    "unnamed": 0
+   },
+   "primary@375": {
+    "stops": 30,
+    "focus_visible": 30,
+    "unnamed": 0
+   },
+   "detail@1440": {
+    "stops": 25,
+    "focus_visible": 25,
+    "unnamed": 0
+   },
+   "detail@375": {
+    "stops": 25,
+    "focus_visible": 25,
+    "unnamed": 0
+   }
+  },
+  "reduced_motion": {
+   "primary": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   },
+   "detail": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   }
+  },
+  "axe_wcag_a_aa_violations": {
+   "primary": [],
+   "detail": []
+  },
+  "non_get_requests_on_page_load": [],
+  "scenario_live_regions": {
+   "primary:slow": 1,
+   "primary:empty": 2,
+   "primary:error": 2,
+   "primary:forbidden": 3,
+   "primary:partial": 4,
+   "detail:slow": 0,
+   "detail:empty": 1,
+   "detail:error": 1,
+   "detail:forbidden": 1,
+   "detail:partial": 1
+  },
+  "source_signals": {
+   "prefers_reduced_motion": 1,
+   "focus_visible": 4,
+   "aria_live": 2,
+   "role_status_alert": 12,
+   "dialog": 1,
+   "transition_all": 0,
+   "emoji_ui": 0,
+   "media_queries": 4,
+   "lang_th": 0,
+   "aria_sort_or_caption": 0,
+   "mutation_confirm": 0
+  },
+  "console_errors": []
+ },
+ "session": {
+  "model": "claude-opus-5-5",
+  "cost_usd": 2.8246450000000003,
+  "num_turns": 50,
+  "wall_seconds": 591,
+  "timed_out": false,
+  "tool_counts": {
+   "Skill": 1,
+   "Bash": 24,
+   "Read": 9,
+   "Write": 10,
+   "ToolSearch": 1,
+   "TaskStop": 1
+  },
+  "skill_file_refs": [
+   "Bash",
+   "Bash"
+  ]
+ },
+ "score_py": {
+  "score": 89.0,
+  "verdict": "PASS",
+  "stdout": "case: connector-marketplace\nvariant: myh\nscore: 89.00/100\nverdict: PASS"
+ }
+}

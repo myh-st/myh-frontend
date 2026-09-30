@@ -1,0 +1,212 @@
+{
+ "case": "ai-agent-workspace",
+ "variant": "myh",
+ "agent": "Claude Code 2.1.285 headless (claude -p), model claude-opus-5-5, effort=high (inherited CLAUDE_EFFORT)",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright: 375/768/1024/1440 overflow on primary+detail(+extra) routes",
+   "playwright: 30-step Tab walk at 1440 and 375 (primary, detail)",
+   "playwright: prefers-reduced-motion=reduce animation check",
+   "axe-core WCAG 2 A/AA scan",
+   "playwright: mock scenarios slow/empty/error/forbidden/partial on primary+detail",
+   "network: requests issued on page load"
+  ],
+  "screenshots": [
+   "screenshots/ai-agent-workspace/myh-primary-375.jpg",
+   "screenshots/ai-agent-workspace/myh-primary-768.jpg",
+   "screenshots/ai-agent-workspace/myh-primary-1024.jpg",
+   "screenshots/ai-agent-workspace/myh-primary-1440.jpg"
+  ],
+  "notes": "Both builds keep the backend contract, routes and selectors, make no non-GET calls on load, use server allowedActions for approvals, and cover scope, evidence, cost, per-action approval, retry and receipts, so neither triggers a critical failure. Y better matches the case's key transfer expectation. It puts execution state in a dedicated Run inspector (mobile Run pane) that the conversation links to, and gates each mutation through an accessible dialog. X interleaves structured run cards into the chat transcript, which buries the approval gate below the fold. Y is also stronger on accessibility (axe clean, skip link, focus-trapped dialogs, hidden drawers removed from the tab order) and responsive recomposition. X's advantages are a stricter review rule (high-risk OR irreversible), draft recovery on a failed first send, and a leaner codebase. Y's weaknesses are misleading slow-load copy and a cramped diff table in the narrow inspector."
+ },
+ "phase": "baseline",
+ "blind_label": "Y",
+ "scorer_rationale": {
+  "task_hierarchy": "The conversation is the centre. The transcript's live-run note gives a clear 'Review 2 proposed changes' CTA, and the Run tab has a '2 to approve' count pill. The approval gate is at the top of the Run inspector, above progress (RunPanel.tsx). Home combines 'Start a conversation' with a 'Needs attention' list. The inspector is narrow, which cramps the diff table.",
+  "domain_adaptation": "Conversation (intent) is separated from a Run inspector (status, estimate vs actual, gate, receipt, steps) and a Scope tab. A compact scope bar is always visible, and on mobile these become Conversation/Run/Scope panes. This directly meets the 'execution separately inspectable' expectation, though the three-pane shell is a common AI-workspace pattern.",
+  "contract_preservation": "No src/api or src/mock changes, and routes and the three selectors are preserved. App.test.tsx was changed only by appending tests; the original test is unchanged. App gains an optional poll prop that defaults to production values. createConversation({title}) is used through a proper form instead of window.prompt.",
+  "interaction_state": "Covers skeletons, empty, messages error, scope error with retry, not-found, search no-match, member view-only, conflict (STALE_VERSION/INVALID_STATE closes the dialog, reloads and warns), budget and run-in-progress errors, busy dialogs, and a copyable receipt with partial-failure guidance. Loading states are slightly misleading: under slow, the composer says 'Scope unavailable — changes disabled' and the Run panel says 'No run selected' while data is still loading (detail-scenario-slow.png).",
+  "responsive": "No overflow at any width. History becomes a drawer below 1180 (visibility hidden). Below 900 the layout switches to Conversation/Run/Scope panes, below 560 the scope bar is trimmed and the home form stacks, and dialogs become bottom sheets at 560. The 380px inspector wraps diff values almost character by character (detail-focus-1440.png), and there are 3-7 small targets on detail.",
+  "accessibility": "axe has zero violations. It has a skip link, a modal Dialog with focus trap, Escape and focus return, a sr-only aria-live run status, icon+text status badges, role=switch for allowActions, visibility-hidden drawers and a global reduced-motion rule. The inspector uses role=tab without arrow-key handling, and the search input relies on a box-shadow rather than an outline for focus.",
+  "visual_consistency": "Coherent flat enterprise system with a consistent stroke icon set, tone-mapped badges and restrained colour. Bold weights in the history list are slightly heavy, and the gate/diff inside the narrow inspector is dense, but there is no card-wall or decorative excess.",
+  "maintainability": "Larger (about 4.4k LOC, about 2k lines of CSS) but well factored: useResource and useRun hooks (visibility-aware polling that ignores stale runIds), shared Dialog/DiffTable/Badge/Icon, and lib/scope helpers. App.tsx holds a lot of view state, and there is a custom icon set.",
+  "ai_governance": "Scope bar shows tenant, read-only sources with unavailable/stale counts, write tools needing approval and budget left. Citations carry excerpts and flag stale or unavailable sources, and the run marks 'Incomplete evidence'. Each approve/reject/retry opens a dialog with target, diff, risk, reversibility and cost, plus 'execution starts after N others decided'. High risk needs an acknowledgement and rejection needs a reason. allowActions is off by default. Cancel explains billing and no rollback. The receipt shows actual vs estimated cost and external IDs."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "history sidebar + conversation with compact scope bar + tabbed Run/Scope inspector (panes on mobile)",
+  "justified_patterns": [
+   "separate run inspector for execution state",
+   "per-action approval dialog with diff/risk/reversibility",
+   "always-visible scope summary bar",
+   "needs-attention list on home",
+   "copyable receipt",
+   "mobile pane switch Conversation/Run/Scope"
+  ],
+  "suspicious_patterns": [
+   "common three-pane AI-workspace shell (sidebar + chat + inspector)",
+   "custom icon set and avatar/brand-mark chrome slightly beyond need"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Execution state is structurally separated from the conversation, with a clear hand-off CTA",
+  "Accessible modal dialogs gate every mutation (approve/reject/retry/cancel)",
+  "Zero axe violations, skip link, and visibility-hidden drawers",
+  "Visibility-aware polling that ignores stale runs",
+  "Explicit test that opening a conversation issues no non-GET requests; loadRequests confirms GET only"
+ ],
+ "defects": [
+  "High-risk acknowledgement only for risk==='high', not for irreversible low/medium actions",
+  "Slow-scenario loading copy wrongly says 'Scope unavailable' and 'No run selected'",
+  "Narrow inspector makes the diff table wrap badly at 1024-1440",
+  "Tablist lacks arrow-key navigation",
+  "Home requires a separate title-creation step before asking"
+ ],
+ "objective_checks": {
+  "checks": {
+   "lint": "pass",
+   "typecheck": "pass",
+   "test": "pass",
+   "build": "pass"
+  },
+  "diffstat": " 20 files changed, 4427 insertions(+), 107 deletions(-)",
+  "backend_contract_files_changed": [],
+  "existing_tests_modified": [
+   "M\tsrc/App.test.tsx"
+  ],
+  "original_test_selectors_present": {
+   "conversation-item": true,
+   "message": true,
+   "proposed-actions": true
+  },
+  "test_cases_total": 15,
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "keyboard_tab_walk": {
+   "primary@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "primary@375": {
+    "stops": 28,
+    "focus_visible": 28,
+    "unnamed": 0
+   },
+   "detail@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   }
+  },
+  "reduced_motion": {
+   "primary": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   },
+   "detail": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   }
+  },
+  "axe_wcag_a_aa_violations": {
+   "primary": [],
+   "detail": []
+  },
+  "non_get_requests_on_page_load": [],
+  "scenario_live_regions": {
+   "primary:slow": 0,
+   "primary:empty": 0,
+   "primary:error": 1,
+   "primary:forbidden": 0,
+   "primary:partial": 0,
+   "detail:slow": 0,
+   "detail:empty": 0,
+   "detail:error": 1,
+   "detail:forbidden": 2,
+   "detail:partial": 2
+  },
+  "source_signals": {
+   "prefers_reduced_motion": 1,
+   "focus_visible": 2,
+   "aria_live": 1,
+   "role_status_alert": 11,
+   "dialog": 1,
+   "transition_all": 0,
+   "emoji_ui": 0,
+   "media_queries": 5,
+   "lang_th": 0,
+   "aria_sort_or_caption": 1,
+   "mutation_confirm": 0
+  },
+  "console_errors": []
+ },
+ "session": {
+  "model": "claude-opus-5-5",
+  "cost_usd": 4.613157800000001,
+  "num_turns": 77,
+  "wall_seconds": 965,
+  "timed_out": false,
+  "tool_counts": {
+   "Skill": 1,
+   "Bash": 48,
+   "Write": 3,
+   "Read": 23
+  },
+  "skill_file_refs": [
+   "Bash"
+  ]
+ },
+ "score_py": {
+  "score": 84.0,
+  "verdict": "REVIEW",
+  "stdout": "case: ai-agent-workspace\nvariant: myh\nscore: 84.00/100\nverdict: REVIEW"
+ }
+}

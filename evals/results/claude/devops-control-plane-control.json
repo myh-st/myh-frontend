@@ -1,0 +1,222 @@
+{
+ "case": "devops-control-plane",
+ "variant": "control",
+ "agent": "Claude Code 2.1.285 headless (claude -p), model claude-opus-5-5, effort=high (inherited CLAUDE_EFFORT)",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 3,
+  "visual_consistency": 4,
+  "maintainability": 3,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright: 375/768/1024/1440 overflow on primary+detail(+extra) routes",
+   "playwright: 30-step Tab walk at 1440 and 375 (primary, detail)",
+   "playwright: prefers-reduced-motion=reduce animation check",
+   "axe-core WCAG 2 A/AA scan",
+   "playwright: mock scenarios slow/empty/error/forbidden/partial on primary+detail",
+   "network: requests issued on page load"
+  ],
+  "screenshots": [
+   "screenshots/devops-control-plane/control-primary-375.jpg",
+   "screenshots/devops-control-plane/control-primary-768.jpg",
+   "screenshots/devops-control-plane/control-primary-1024.jpg",
+   "screenshots/devops-control-plane/control-primary-1440.jpg"
+  ],
+  "notes": "Both builds reached the same domain-appropriate structure: incident header, telemetry tabs, AI investigation with cited evidence, remediation cards with a separate approve step and a typed or acknowledged execute step, receipts, rollback with confirmation, all gated on server allowedActions, with no contract changes and no non-GET calls on load. X is stronger on accessibility (skip link, roving tabs, keyboard charts, no contrast issues), on visual polish and on code structure. Y is stronger on AI governance: it confirms the billable run in a dialog and checks each citation against the loaded telemetry. Y's list page uses a more generic KPI tile row, it has axe contrast failures, and it relies on inline styles. Neither has a critical failure. Overall X edges ahead on craft and accessibility, and Y on governance detail."
+ },
+ "phase": "baseline",
+ "blind_label": "Y",
+ "scorer_rationale": {
+  "task_hierarchy": "The detail page follows the same order: summary, then telemetry, investigation and remediation, with an ownership/timeline aside. The header is compact and the primary actions (Start investigation…, Review & approve…) are clear. Remediation is last, and there is no section nav.",
+  "domain_adaptation": "The detail IA is incident/evidence/remediation and telemetry drills in via citations. The list page opens with a four-card KPI row (active, without commander, down/degraded, SLOs breached), then a 'Needs attention' strip with on-call, then the table. The KPIs are domain-relevant but the KPI-row shell is generic.",
+  "contract_preservation": "contract_files_changed [], original selectors kept, and gating comes from allowedActions. It also edits README.md, which is harmless. It adds scenario-query propagation to in-app links (lib/scenario.ts), a dev-mock coupling in production code, but it does not change the contract.",
+  "interaction_state": "Loading, empty, error+retry and 'showing last known' refresh-failure states, per-card STALE_VERSION/INVALID_STATE/FORBIDDEN notices saying 'Nothing was changed', a partial-telemetry warning naming the source, a failed execution labelled partially changed with rollback or escalation to on-call, and a rollback dialog with ack and a receipt.",
+  "responsive": "No overflow at any width. Collapses to a single column below 1100 with ownership moved to the bottom. KPIs and the incident table stack at 375 and metric cards reflow. There are 8 small targets at 1440 on primary.",
+  "accessibility": "Focus-visible on all stops with none unnamed, dialog focus trap and return, role=log for logs, and aria-live on execution progress. There is no skip link, and axe reports serious colour-contrast violations (3 nodes on primary, 6 on detail). Tabs have no arrow-key roving, charts are not keyboard-inspectable, and JS smooth scroll ignores reduced motion. Status is conveyed through text glyphs.",
+  "visual_consistency": "A restrained warm-grey palette with light chrome and less card nesting than X, plus dark mode support. Glyph icons (✕ ! ✓) are functional but less refined, and the KPI tiles are generic.",
+  "maintainability": "Reasonable lib/components/features split and a useResource/usePoll pair (about 3.6k LOC). Heavy inline style objects throughout (style={{marginTop:…}}) and the scenario-link hack threaded through every Link reduce maintainability.",
+  "ai_governance": "The investigation needs a dialog with scope selection and a billable-call warning, and on conflict the UI refuses to start a second paid run. Each citation is checked against loaded telemetry and marked located, not in loaded telemetry, or source unavailable. Approval needs an ack checkbox, and execute always needs the typed service name, with high-risk and irreversible warnings. The receipt shows the approval ID and audit ref."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "incident workspace: stacked telemetry → investigation → remediation column with owners/timeline aside; KPI row + needs-attention + triage table list",
+  "justified_patterns": [
+   "needs-attention strip with on-call names",
+   "telemetry tabs with counts, server-side log filters and trace↔log links",
+   "evidence verification badges on AI citations",
+   "Proposed→Approved→Executing→Result workflow per remediation",
+   "separate acknowledged approval and typed-confirm execution",
+   "services page with 'My teams' filter and URL-persisted filters"
+  ],
+  "suspicious_patterns": [
+   "generic four-card KPI row atop incidents page",
+   "mock-scenario query propagation in production navigation code"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Best AI governance: confirm dialog for billable run, citation verification, no duplicate paid run",
+  "Clear 'Nothing was changed' messaging on every rejected mutation",
+  "Tests cover stale-version, failed investigation, observer read-only"
+ ],
+ "defects": [
+  "axe colour-contrast violations on both pages",
+  "No skip link, and no keyboard access to chart values",
+  "Heavy inline styles",
+  "Generic KPI tile row on the list page"
+ ],
+ "objective_checks": {
+  "checks": {
+   "lint": "pass",
+   "typecheck": "pass",
+   "test": "pass",
+   "build": "pass"
+  },
+  "diffstat": " 27 files changed, 3594 insertions(+), 154 deletions(-)",
+  "backend_contract_files_changed": [],
+  "existing_tests_modified": [],
+  "original_test_selectors_present": {
+   "incident-row": true,
+   "status-filter": true
+  },
+  "test_cases_total": 17,
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "keyboard_tab_walk": {
+   "primary@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "primary@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   }
+  },
+  "reduced_motion": {
+   "primary": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   },
+   "detail": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   }
+  },
+  "axe_wcag_a_aa_violations": {
+   "primary": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "nodes": 3
+    }
+   ],
+   "detail": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "nodes": 6
+    }
+   ]
+  },
+  "non_get_requests_on_page_load": [],
+  "scenario_live_regions": {
+   "primary:slow": 0,
+   "primary:empty": 0,
+   "primary:error": 2,
+   "primary:forbidden": 0,
+   "primary:partial": 0,
+   "detail:slow": 0,
+   "detail:empty": 0,
+   "detail:error": 1,
+   "detail:forbidden": 0,
+   "detail:partial": 0
+  },
+  "source_signals": {
+   "prefers_reduced_motion": 1,
+   "focus_visible": 1,
+   "aria_live": 3,
+   "role_status_alert": 4,
+   "dialog": 1,
+   "transition_all": 0,
+   "emoji_ui": 0,
+   "media_queries": 5,
+   "lang_th": 0,
+   "aria_sort_or_caption": 0,
+   "mutation_confirm": 0
+  },
+  "console_errors": []
+ },
+ "session": {
+  "model": "claude-opus-5-5",
+  "cost_usd": 3.9187167999999994,
+  "num_turns": 67,
+  "wall_seconds": 822,
+  "timed_out": false,
+  "tool_counts": {
+   "Bash": 30,
+   "Read": 8,
+   "Skill": 1,
+   "Write": 23
+  },
+  "skill_file_refs": []
+ },
+ "score_py": {
+  "score": 84.0,
+  "verdict": "REVIEW",
+  "stdout": "case: devops-control-plane\nvariant: control\nscore: 84.00/100\nverdict: REVIEW"
+ }
+}

@@ -1,0 +1,208 @@
+{
+ "case": "hr-onboarding",
+ "variant": "control",
+ "agent": "Claude Code 2.1.285 headless (claude -p), model claude-opus-5-5, effort=high (inherited CLAUDE_EFFORT)",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 4,
+  "interaction_state": 3,
+  "responsive": 3,
+  "accessibility": 4,
+  "visual_consistency": 3,
+  "maintainability": 4,
+  "ai_governance": 3
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright: 375/768/1024/1440 overflow on primary+detail(+extra) routes",
+   "playwright: 30-step Tab walk at 1440 and 375 (primary, detail)",
+   "playwright: prefers-reduced-motion=reduce animation check",
+   "axe-core WCAG 2 A/AA scan",
+   "playwright: mock scenarios slow/empty/error/forbidden/partial on primary+detail",
+   "network: requests issued on page load"
+  ],
+  "screenshots": [
+   "screenshots/hr-onboarding/control-primary-375.jpg",
+   "screenshots/hr-onboarding/control-primary-768.jpg",
+   "screenshots/hr-onboarding/control-primary-1024.jpg",
+   "screenshots/hr-onboarding/control-primary-1440.jpg"
+  ],
+  "notes": "Both builds keep the backend contract and test selectors intact, derive controls from allowedActions, serialize versioned mutations and handle STALE_VERSION and partial sources, and both adopt a checklist-first hire workspace with PII hidden on demand. Y is materially stronger on governed actions and state truthfulness: approve/reject go through a consequence-stating confirm step and every successful mutation yields a server-confirmed, versioned receipt, whereas X executes decisions on one click with no receipt. Y also recomposes cleanly at every width (including moving approvals above the checklist on mobile) while X overflows at 768 and has an awkward desktop table. X has the better default prioritisation (needs-attention sort, 'Waiting on you' grouping) and a cleaner axe result, but overall Y is the more complete and robust result."
+ },
+ "phase": "baseline",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Hires list defaults to 'Needs attention first' sort with clickable status counts; hire page leads with attention chips (awaiting you / exceptions / blocked / overdue) and a main column of Issues + Checklist; manager page groups 'Waiting on you' first.",
+  "domain_adaptation": "Checklist-first workspace in dependency order (lib/checklist.ts dependencyOrder) with owner/due/overdue/depends-on and approval linkage; PII shown once, hidden until revealed and only for HR partners; unavailable document vault explained as 'not missing'.",
+  "contract_preservation": "No src/api or src/mock changes; hire-row, cohort-filter, task-checkbox preserved; status filter passed to server; controls derived from allowedActions. Adds a UI-only role policy hiding PII from managers (HirePage.tsx `me.role === 'hr_partner'`) and a SessionGate that blocks the whole app when /api/me fails.",
+  "interaction_state": "Loading, empty, no-match, read-only, 403/404, partial (unavailableSources), STALE_VERSION pause with 'Load latest version' and inline mutation errors are handled; but error scenario collapses to a single 'Could not load your session' screen, there is no success receipt except 'Request sent.', and approve/reject execute on one click with no confirm step.",
+  "responsive": "375 recomposes the table into labelled cards with no overflow, but verify.json shows primary@768 pageOverflowX (table right=805, header clipped) and the table wraps dates to 4 lines at 1440; detail page does not reorder approvals ahead of the 10-task checklist on mobile.",
+  "accessibility": "axe clean on primary and detail, 29-30 tab stops all focus-visible (3px outline), no unnamed controls, labelled checkboxes and selects, progressbar with valuetext, text+glyph status badges, reduced-motion rule; no skip link.",
+  "visual_consistency": "Calm, restrained tokens and badges, but the desktop table is poorly proportioned (start date column wraps heavily) and each task shows a status badge plus a redundant status select, adding noise.",
+  "maintainability": "Clean feature folders, HireContext with a single serialized `run` mutation helper, useResource, lib/checklist hints and describeError; 18 new tests including stale-version recovery.",
+  "ai_governance": "Only the named approver sees Approve/Reject, reject requires a comment, decision disabled until dependencies are done, server response replaces state; but no confirmation step naming consequences (reject blocks the task and hire) and no decision receipt."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "filterable cohort table -> hire workspace (checklist + issues main column, approvals/documents/PII side rail) + mobile card list for manager summary",
+  "justified_patterns": [
+   "status-count filter buttons on hires list",
+   "attention chips linking to sections",
+   "dependency-ordered checklist with blocker reasons",
+   "PII reveal-on-demand panel",
+   "manager 'Waiting on you' grouping with next action/owner/due"
+  ],
+  "suspicious_patterns": [
+   "redundant status badge + status select on every task row"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": false,
+  "confirmation": false,
+  "recovery": true
+ },
+ "strengths": [
+  "Needs-attention-first default sort",
+  "Serialized mutations with version from latest record and stale-version pause preserving typed input",
+  "PII shown once and hidden by default",
+  "Clean axe results and full keyboard focus visibility",
+  "Manager summary prioritises items waiting on the viewer"
+ ],
+ "defects": [
+  "Horizontal overflow on hires list at 768px (table 805px)",
+  "Approve/Reject fire immediately with no confirm step or receipt",
+  "Global SessionGate turns any /api/me failure into a whole-app error",
+  "Desktop table wastes space with heavily wrapped date cells",
+  "No mobile reordering of approvals above long checklist"
+ ],
+ "objective_checks": {
+  "checks": {
+   "lint": "pass",
+   "typecheck": "pass",
+   "test": "pass",
+   "build": "pass"
+  },
+  "diffstat": " 20 files changed, 2380 insertions(+), 131 deletions(-)",
+  "backend_contract_files_changed": [],
+  "existing_tests_modified": [],
+  "original_test_selectors_present": {
+   "cohort-filter": true,
+   "hire-row": true
+  },
+  "test_cases_total": 25,
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": true,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "keyboard_tab_walk": {
+   "primary@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "primary@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@1440": {
+    "stops": 30,
+    "focus_visible": 30,
+    "unnamed": 0
+   },
+   "detail@375": {
+    "stops": 30,
+    "focus_visible": 30,
+    "unnamed": 0
+   }
+  },
+  "reduced_motion": {
+   "primary": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   },
+   "detail": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   }
+  },
+  "axe_wcag_a_aa_violations": {
+   "primary": [],
+   "detail": []
+  },
+  "non_get_requests_on_page_load": [],
+  "scenario_live_regions": {
+   "primary:slow": 1,
+   "primary:empty": 0,
+   "primary:error": 1,
+   "primary:forbidden": 1,
+   "primary:partial": 1,
+   "detail:slow": 1,
+   "detail:empty": 0,
+   "detail:error": 1,
+   "detail:forbidden": 1,
+   "detail:partial": 2
+  },
+  "source_signals": {
+   "prefers_reduced_motion": 1,
+   "focus_visible": 1,
+   "aria_live": 2,
+   "role_status_alert": 5,
+   "dialog": 0,
+   "transition_all": 0,
+   "emoji_ui": 0,
+   "media_queries": 3,
+   "lang_th": 0,
+   "aria_sort_or_caption": 0,
+   "mutation_confirm": 0
+  },
+  "console_errors": []
+ },
+ "session": {
+  "model": "claude-opus-5-5",
+  "cost_usd": 1.9640256000000003,
+  "num_turns": 24,
+  "wall_seconds": 455,
+  "timed_out": false,
+  "tool_counts": {
+   "Bash": 23
+  },
+  "skill_file_refs": []
+ },
+ "score_py": {
+  "score": 72.0,
+  "verdict": "FAIL",
+  "stdout": "case: hr-onboarding\nvariant: control\nscore: 72.00/100\nverdict: FAIL"
+ }
+}
