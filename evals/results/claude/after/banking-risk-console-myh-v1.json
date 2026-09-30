@@ -1,0 +1,118 @@
+{
+ "case": "banking-risk-console",
+ "variant": "myh-v1",
+ "skill_version": "v1 (original)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds keep the backend contract, gate actions on server allowedActions, make no mutating calls on load (GETs only), and replace the legacy prompt/confirm with governed forms. None triggers a critical-failure rule. X and Z are close. X has the richest governance (an acknowledgement checkbox on approve, a list of what changed after a stale reload, and a warning for transactions made after the hypothesis) and keeps the two-column case layout down to 1024, but it puts the AI panel first and clips the transactions table at 1024. Z has the most thorough state handling and cleaner mobile card recomposition but relies heavily on inline styles. Y has the best evidence-to-AI cross-linking ('Cited by AI' badges) and the leanest code, but it falls behind clearly on responsiveness (tables only scroll inside their wrapper at 375 and 768) and has axe color-contrast failures. None of the builds uses a generic KPI wall, a chat layout or a sidebar shell; all follow a domain-appropriate queue-plus-case-workspace structure."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Case page is a two-column workspace: evidence on the left and a sticky 'Case actions' aside (freeze, then decision) on the right. At narrow widths a 'Jump to decision and freeze actions' link covers the long scroll. One weakness: the AI hypothesis sits first, with a purple top border, above the transactions.",
+  "domain_adaptation": "Uses an alert queue plus a case investigation workspace. Transactions carry inline flag-reason rows, entities are sorted by risk with link reasons, and there is a server-emitted audit timeline. Hypothesis basis items scroll to and focus the cited evidence. Leading with the AI panel slightly over-weights the model compared with the authoritative evidence.",
+  "contract_preservation": "src/api and src/mock are untouched (contract_files_changed is empty), and the original alert-row, severity-filter, txn-row and freeze-button test IDs and routes are kept. The original queue test still passes, and every action is gated on the server's allowedActions (e.g. DecisionPanel.tsx `allowed = c.allowedActions.includes('record_decision')`); role is only used to explain why an action is disabled.",
+  "interaction_state": "Covers skeleton loading, a clear queue vs. a 'no match' state with Clear filters, a retryable error, and a case-not-found page. On a stale version it keeps the draft and 'Load latest version' reloads the case, audit and session, then lists what changed (describeChanges). It also has a read-only banner, a partial-data banner, 'Unavailable' device cells, and success banners that appear only after the server returns.",
+  "responsive": "No page overflow at any width. At 375 and 768 tables become labelled stacked rows via data-label, and the case layout drops to one column below 1024px. At 1024 the transactions table is clipped (the Location column is cut off) and needs horizontal scrolling inside its wrapper.",
+  "accessibility": "Tab walk hits 29/29 and 28/28 visible focus stops with no unnamed stops. Dialogs trap focus, close on Escape and return focus to the trigger. Meters have ARIA values, severity is shown with icon plus text, and reduced motion is respected in both CSS and JS scrolling. Axe reports one serious 'scrollable-region-focusable' issue: the txn table wrapper is not focusable.",
+  "visual_consistency": "Calm, light enterprise look built from tokens, with one stroke icon family and restrained red and amber saved for risk. There is no KPI wall; the queue summary is one inline line. The AI panel's purple accent is a little prominent.",
+  "maintainability": "Good split into pages/case/*, a shared ui.tsx and Dialog, and lib helpers (useResource with sequence guarding, errors.ts mapping error codes to recovery). There are few inline styles, but the CSS file is large (~1,400 lines).",
+  "ai_governance": "The approve dialog lists the exact accounts, the server-estimated impact and the requester's reason. It requires a 'reviewed evidence and impact' checkbox, focuses Cancel first, and names the effect on its button ('Approve and freeze 1 account'). The receipt shown is the server's (reference number, freeze ID). The request dialog states that nothing is frozen until a second person approves. The hypothesis is labelled advisory only, weights its basis, and warns about transactions made after it was generated and about basis items that cannot be verified."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "alert queue table -> case workspace (evidence column + sticky action aside) with modal governed actions",
+  "justified_patterns": [
+   "severity/confidence triage table with URL-persisted filters",
+   "evidence-anchored hypothesis basis with jump-to-evidence",
+   "two-person freeze panel with pending/receipt/history",
+   "server audit timeline",
+   "modal confirm with acknowledgement for irreversible freeze"
+  ],
+  "suspicious_patterns": [
+   "AI hypothesis placed first and visually accented above authoritative transaction evidence"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "After a stale reload it lists what changed between versions",
+  "Approve dialog shows scope, impact, requester reason and an ack checkbox",
+  "Hypothesis flags transactions made after it was generated",
+  "Stacked mobile tables plus a jump link to the actions"
+ ],
+ "defects": [
+  "Transactions table clipped at 1024 and its scroll wrapper is not focusable (axe scrollable-region-focusable)",
+  "AI panel leads the evidence column",
+  "Sticky aside clips the decision panel in full-page captures, so it relies on scrolling inside the aside"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": [
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "nodes": 1
+    }
+   ]
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 2.9914249999999996,
+  "num_turns": 38,
+  "wall_seconds": 656
+ },
+ "score_py": {
+  "score": 87.0,
+  "verdict": "PASS"
+ }
+}

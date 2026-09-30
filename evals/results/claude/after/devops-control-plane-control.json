@@ -1,0 +1,134 @@
+{
+ "case": "devops-control-plane",
+ "variant": "control",
+ "skill_version": null,
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 4,
+  "accessibility": 3,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds converge on the same sound incident-workspace IA: context, then telemetry tabs, then AI investigation, then remediation cards, with an owners/timeline aside. All preserve the backend contract and selectors, make only GET calls on load, gate by server allowedActions, and split approve and execute into confirmed dialogs with receipts and rollback, so none triggers a critical failure. X is the most accessibility-clean (0 axe issues, skip link, roving tabs) and has the most robust polling and failure handling. Its remediation section is buried at the bottom and its overview list is not triaged. Y adds a section jump-nav, per-remediation steppers, keyboard-readable charts with a table alternative and severity triage, at the cost of one serious axe issue. Z has the strongest AI-evidence governance (citation verification) and the strictest confirmation ladder, but trails on accessibility (no skip link, contrast violations, non-roving tabs) and swallows poll errors silently. The differences are small, with X and Y roughly tied at the top and Z slightly behind on accessibility and state handling."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Z",
+ "scorer_rationale": {
+  "task_hierarchy": "The incident page layout is summary → telemetry → AI investigation → remediations, with owners and timeline in the aside. Remediation cards show a Proposed → Approved → Executing → Result workflow and open their steps when actionable. The overview is retitled 'Production overview' with the incident queue sorted by severity.",
+  "domain_adaptation": "The strongest evidence model of the three. Each citation is checked against the loaded telemetry and timeline and marked 'Source located', 'Not in loaded telemetry' or 'Source unavailable' (lib/evidence.ts), and deploy citations jump to the timeline event. The overview adds a 'Without commander' count, the list auto-refreshes every 30s, and the status filter is kept in the URL.",
+  "contract_preservation": "No src/api or src/mock changes, and routes and test IDs are kept. It edits README.md, but only to append a frontend-structure section, which is harmless. The scenario query param is carried across in-app links for dev use.",
+  "interaction_state": "Covers loading skeletons, empty and error states with retry, partial telemetry, the observer read-only notice, stale conflicts ('Nothing was changed', latest state reloaded), partial-failure recovery and rollback confirmation. However, poll failures are swallowed silently (usePoll catch {}), and the slow detail scenario shows a bare skeleton with no back link or live region (liveRegions 0). Slow trace spans are labelled '✓ ok'.",
+  "responsive": "No overflow at any width. Tables stack into labelled rows, the KPI tiles stack, the header shows a short role label, and the aside moves below the main content on mobile.",
+  "accessibility": "Uses a solid 2px focus outline and 29 of 29 keyboard stops are focus-visible. However, there is no skip link, and axe reports serious color-contrast issues (3 nodes on primary, 6 on detail). Tabs have no roving tabindex or arrow-key support, loading uses only aria-busy, and status glyphs are aria-hidden with text alongside. Reduced motion and dark mode are supported.",
+  "visual_consistency": "Compact, calm and dense, with a dark-mode token set. The KPI row with 4 tiles is conventional, but its tiles carry domain-specific metrics. Inline style={} props are scattered through the components.",
+  "maintainability": "Well-factored lib code (evidence parsing and verification, error mapping, usePoll/useResource) and feature folders, with a README section documenting the structure. Many inline styles instead of classes.",
+  "ai_governance": "Investigation opens a dialog with a scope fieldset and a 'Billable model call' warning, and it reports that STALE/IN_PROGRESS conflicts meant nothing was billed. Approve needs an acknowledgement checkbox. Execute always needs the target service name typed, plus extra warnings for high-risk or irreversible changes, and shows the approval ID. Rollback has its own acknowledgement, the receipt shows before→after changes, and citations are verified."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "incident workspace: summary → telemetry tabs → AI investigation → remediation workflow cards; owners + timeline aside; overview = KPI row + needs-attention chips + triaged table",
+  "justified_patterns": [
+   "citation verification badges against loaded telemetry",
+   "remediation workflow strip",
+   "unassigned-commander metric",
+   "URL-persisted filters",
+   "typed-target execute confirmation"
+  ],
+  "suspicious_patterns": [
+   "generic 4-tile KPI row on overview",
+   "inline style props throughout"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "evidence verification ('Source located' / 'Not in loaded telemetry')",
+  "strictest confirmation ladder (ack approve, typed execute, ack rollback)",
+  "clear 'nothing was changed/billed' copy on conflicts",
+  "dark mode"
+ ],
+ "defects": [
+  "no skip link",
+  "axe color-contrast serious (3/6 nodes)",
+  "tabs lack arrow-key/roving tabindex",
+  "silent poll-failure swallowing",
+  "slow spans labelled 'ok'",
+  "loads all logs on detail open even when the logs tab is not shown (all GET, not a side effect)"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "nodes": 3
+    }
+   ],
+   "detail": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "nodes": 6
+    }
+   ]
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 3.9187167999999994,
+  "num_turns": 67,
+  "wall_seconds": 822
+ },
+ "score_py": {
+  "score": 82.0,
+  "verdict": "REVIEW"
+ }
+}

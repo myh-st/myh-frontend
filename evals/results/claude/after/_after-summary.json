@@ -1,0 +1,180 @@
+{
+ "cases": {
+  "ai-agent-workspace": {
+   "control": 78.0,
+   "myh-v1": 95.0,
+   "myh-v2": 82.0,
+   "v1_lift": 17.0,
+   "v2_lift": 4.0,
+   "v2_minus_v1": -13.0,
+   "criticals": {
+    "control": [],
+    "myh-v1": [],
+    "myh-v2": []
+   }
+  },
+  "banking-risk-console": {
+   "control": 77.0,
+   "myh-v1": 87.0,
+   "myh-v2": 86.0,
+   "v1_lift": 10.0,
+   "v2_lift": 9.0,
+   "v2_minus_v1": -1.0,
+   "criticals": {
+    "control": [],
+    "myh-v1": [],
+    "myh-v2": []
+   }
+  },
+  "connector-marketplace": {
+   "control": 69.0,
+   "myh-v1": 83.0,
+   "myh-v2": 82.0,
+   "v1_lift": 14.0,
+   "v2_lift": 13.0,
+   "v2_minus_v1": -1.0,
+   "criticals": {
+    "control": [],
+    "myh-v1": [],
+    "myh-v2": []
+   }
+  },
+  "devops-control-plane": {
+   "control": 82.0,
+   "myh-v1": 87.0,
+   "myh-v2": 87.0,
+   "v1_lift": 5.0,
+   "v2_lift": 5.0,
+   "v2_minus_v1": 0.0,
+   "criticals": {
+    "control": [],
+    "myh-v1": [],
+    "myh-v2": []
+   }
+  },
+  "government-service-portal": {
+   "control": 84.0,
+   "myh-v1": 88.0,
+   "myh-v2": 97.0,
+   "v1_lift": 4.0,
+   "v2_lift": 13.0,
+   "v2_minus_v1": 9.0,
+   "criticals": {
+    "control": [],
+    "myh-v1": [],
+    "myh-v2": []
+   }
+  },
+  "hospital-operations": {
+   "control": 82.0,
+   "myh-v1": 83.0,
+   "myh-v2": 88.0,
+   "v1_lift": 1.0,
+   "v2_lift": 6.0,
+   "v2_minus_v1": 5.0,
+   "criticals": {
+    "control": [],
+    "myh-v1": [],
+    "myh-v2": []
+   }
+  },
+  "hr-onboarding": {
+   "control": 76.0,
+   "myh-v1": 83.0,
+   "myh-v2": 85.0,
+   "v1_lift": 7.0,
+   "v2_lift": 9.0,
+   "v2_minus_v1": 2.0,
+   "criticals": {
+    "control": [
+     "unsafe_mutation"
+    ],
+    "myh-v1": [],
+    "myh-v2": []
+   }
+  },
+  "retail-analytics": {
+   "control": 77.0,
+   "myh-v1": 84.0,
+   "myh-v2": 83.0,
+   "v1_lift": 7.0,
+   "v2_lift": 6.0,
+   "v2_minus_v1": -1.0,
+   "criticals": {
+    "control": [],
+    "myh-v1": [],
+    "myh-v2": []
+   }
+  }
+ },
+ "per_dimension": {
+  "task_hierarchy": {
+   "control": 3.88,
+   "myh-v1": 4.12,
+   "myh-v2": 4.12
+  },
+  "domain_adaptation": {
+   "control": 3.88,
+   "myh-v1": 4,
+   "myh-v2": 4.12
+  },
+  "contract_preservation": {
+   "control": 4.88,
+   "myh-v1": 4.88,
+   "myh-v2": 4.75
+  },
+  "interaction_state": {
+   "control": 3.75,
+   "myh-v1": 4.75,
+   "myh-v2": 4.88
+  },
+  "responsive": {
+   "control": 3.38,
+   "myh-v1": 4.12,
+   "myh-v2": 3.88
+  },
+  "accessibility": {
+   "control": 3.38,
+   "myh-v1": 4.12,
+   "myh-v2": 4.25
+  },
+  "visual_consistency": {
+   "control": 3.88,
+   "myh-v1": 4,
+   "myh-v2": 3.88
+  },
+  "maintainability": {
+   "control": 4,
+   "myh-v1": 4,
+   "myh-v2": 3.88
+  },
+  "ai_governance": {
+   "control": 3.75,
+   "myh-v1": 4.5,
+   "myh-v2": 4.75
+  }
+ },
+ "verdicts": {
+  "control": {
+   "PASS": 0,
+   "REVIEW": 6,
+   "FAIL": 1,
+   "CRITICAL FAIL": 1
+  },
+  "myh-v1": {
+   "PASS": 4,
+   "REVIEW": 4,
+   "FAIL": 0,
+   "CRITICAL FAIL": 0
+  },
+  "myh-v2": {
+   "PASS": 5,
+   "REVIEW": 3,
+   "FAIL": 0,
+   "CRITICAL FAIL": 0
+  }
+ },
+ "mean_control": 78.12,
+ "mean_myh-v1": 86.25,
+ "mean_myh-v2": 86.25
+}

@@ -1,0 +1,123 @@
+{
+ "case": "banking-risk-console",
+ "variant": "control",
+ "skill_version": null,
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 2,
+  "accessibility": 3,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds keep the backend contract, gate actions on server allowedActions, make no mutating calls on load (GETs only), and replace the legacy prompt/confirm with governed forms. None triggers a critical-failure rule. X and Z are close. X has the richest governance (an acknowledgement checkbox on approve, a list of what changed after a stale reload, and a warning for transactions made after the hypothesis) and keeps the two-column case layout down to 1024, but it puts the AI panel first and clips the transactions table at 1024. Z has the most thorough state handling and cleaner mobile card recomposition but relies heavily on inline styles. Y has the best evidence-to-AI cross-linking ('Cited by AI' badges) and the leanest code, but it falls behind clearly on responsiveness (tables only scroll inside their wrapper at 375 and 768) and has axe color-contrast failures. None of the builds uses a generic KPI wall, a chat layout or a sidebar shell; all follow a domain-appropriate queue-plus-case-workspace structure."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Y",
+ "scorer_rationale": {
+  "task_hierarchy": "At 1440 the case page has evidence on the left and decision, freeze and audit on the right, and the decision is clearly locked with its reason. Below 1100px the layout drops to one column and the actions land after all the evidence, with no shortcut to reach them.",
+  "domain_adaptation": "Fits case investigation well. Evidence shows 'Cited by AI · N%' badges linking model reasoning back to authoritative records, entities are grouped by type with 'Why linked', and flagged outbound totals are shown. The hypothesis callout says it is 'not evidence itself', which keeps AI subordinate.",
+  "contract_preservation": "src/api and src/mock are unchanged and existing tests are untouched (new tests are in a separate file). The four test IDs and routes are kept. The UI gates on allowedActions and permissions only (README note, session.can). Minor extras: the README gained a structure section, and useAppPath carries ?scenario= forward in links.",
+  "interaction_state": "Has text loading states, an empty state, a service error with Try again, not-found, a read-only banner, a partial banner with 'Retry sources', and a stale reload that reports 'you had v5, now v6'. Decision drafts survive reloads, and receipts appear only after the server responds. However, when /api/me fails the header shows 'Signing in…' indefinitely (primary:error scenario), and the loading states are plain spinner text.",
+  "responsive": "Tables are never recomposed; they only scroll horizontally inside .table-wrap. At 375 the alert table shows only Severity, Confidence and Alert, with titles squeezed to about 80px, while Case, Amount and Customer sit off-screen. At 768 the alert column wraps word by word. The case txn table at 375 shows only Time and Amount. There is no page overflow, and row tap still opens the case, so this is weak rather than broken.",
+  "accessibility": "Focus rings are visible on all 29 and 28 stops, with no unnamed stops, and there is a skip link. Axe reports serious color-contrast issues on 6 primary nodes and 2 detail nodes. Table scroll wrappers are not focusable. showEvidence uses smooth scrolling without checking reduced motion, and focus relies on a tabIndex applied only after the highlight state renders.",
+  "visual_consistency": "Dense, calm operational look with a dark top bar and consistent badges. Severity chips double as quick filters. Coherent and enterprise-appropriate.",
+  "maintainability": "Smallest diff (about 3,000 LOC). Uses a clean useResource/useAction pair, the fewest inline styles, and separate test file. Some logic is duplicated across the unavailable-reason helpers.",
+  "ai_governance": "Freeze request goes through edit, then a review step, then 'Submit for second approval'. Approve uses an inline confirm that names the exact account IDs, with scope, impact and reason visible above it, and the receipt shown is the server's. There is no modal and no acknowledgement step, and the requester sees impact only after submitting (an API limitation shared by all three builds)."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "alert queue table -> case page (evidence column + action/audit column), inline governed actions",
+  "justified_patterns": [
+   "severity chips as quick filters",
+   "'Cited by AI' badges on evidence rows/entities",
+   "two-step freeze request review",
+   "server audit history timeline in action column"
+  ],
+  "suspicious_patterns": [
+   "desktop table layout simply shrunk/scrolled on mobile rather than recomposed"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Cross-linking between AI basis and evidence works in both directions",
+  "Clear statement that the hypothesis is not evidence",
+  "Lean, readable code with the original tests untouched"
+ ],
+ "defects": [
+  "No mobile table recomposition: case links and amounts are hidden behind internal horizontal scroll at 375",
+  "Axe color-contrast failures (6 + 2 nodes)",
+  "Header stuck on 'Signing in…' when the session fails",
+  "Single column from 1100px down, with actions buried below the evidence"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "nodes": 6
+    }
+   ],
+   "detail": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "nodes": 2
+    }
+   ]
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 2.6686704000000003,
+  "num_turns": 39,
+  "wall_seconds": 499
+ },
+ "score_py": {
+  "score": 77.0,
+  "verdict": "REVIEW"
+ }
+}

@@ -73,6 +73,8 @@ Verify at minimum:
 
 Use responsive layout changes, not merely smaller fonts.
 
+Absence of horizontal overflow is not enough. Treat content squeeze as a defect too: table columns wrapping to one or two words per line, clipped action columns, or nested scroll panes that hide primary actions. Change representation (stack, drop to disclosure, move the inspector below or into a separate view) before compressing, and judge this from rendered screenshots, not only from scroll-width checks.
+
 ## Enterprise AI and governed actions
 
 For AI/Agent features, read `references/enterprise-ai-ui.md`.
@@ -125,6 +127,8 @@ Implement and visually account for relevant states:
 - success / receipt;
 - destructive confirmation;
 - long content and localization overflow.
+
+Keep these states distinct. While a request is in flight, do not render derived zeros, counts, "no results", or "unavailable" copy; loading, empty, and failed must each read differently, and a failed load must never look like an empty list.
 
 ### 5. Verify
 

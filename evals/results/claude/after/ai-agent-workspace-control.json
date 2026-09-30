@@ -1,0 +1,126 @@
+{
+ "case": "ai-agent-workspace",
+ "variant": "control",
+ "skill_version": null,
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 3,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 4,
+  "accessibility": 3,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three keep the backend contract, make only GET requests on load, gate every external mutation per action using server allowedActions, and issue receipts with partial-failure recovery. None triggers a critical failure. Z is the most complete: execution is separated into a tabbed Run/Scope inspector at every width, scope stays visible, there is no overflow and axe is clean, and every mutation goes through a dialog that explains its side effects. X matches Z on governance and state handling and has the richest approval dialogs, but it overflows horizontally at 375, 768 and 1024 and replaced the explicit routes with a catch-all. Y has the best contract hygiene (existing test untouched, explicit routes) and no overflow, but it embeds execution state inline in the chat thread. Y also hides scope behind a button below 1180px and has an axe serious violation with no skip link, so it scores lower on domain adaptation and accessibility."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Y",
+ "scorer_rationale": {
+  "task_hierarchy": "The thread is primary. Each run renders as a collapsible RunCard inline after its question or answer, with approvals inside it, and the composer is blocked with a reason while a run awaits approval. The pending gate sits below the answer and needs scrolling inside the thread.",
+  "domain_adaptation": "Execution state is structured (step timeline, approvals, receipt) but embedded in the conversation stream rather than on a separately inspectable surface, which only partly meets the 'conversation for intent, execution separate' expectation. The right-hand scope panel suits the domain at 1440.",
+  "contract_preservation": "src/api and src/mock are untouched, the existing App.test.tsx is unchanged, and the explicit / and /c/:conversationId routes are kept. Controls are driven by server allowedActions, and the README records that the UI never infers permissions from role.",
+  "interaction_state": "Handles skeleton loading, a total-outage screen, a per-resource error banner, empty states, and unavailable/stale/budget banners. Conflicts get explanations and a re-sync, cancel has an inline confirmation, and a question that fails after the conversation is created is put back in the composer. The receipt shows applied, failed and not-applied changes. Retry has no confirmation, and success notices auto-dismiss after 4s.",
+  "responsive": "No page overflow at any width. History becomes a drawer below 800px and scope becomes a drawer below 1180px. However, at 1024 and 375 the current scope is reduced to a 'Scope' text button (with a ⚠ glyph when a source is unavailable), so scope is no longer visible at a glance.",
+  "accessibility": "axe reports 1 serious violation (scrollable-region-focusable) on both pages. There is no skip link, and the drawers open without focus management. aria-live='polite' on the entire thread is likely noisy. Focus is visible on 29 of 29 stops, the diff and receipt use semantic tables, and step status has sr-only text.",
+  "visual_consistency": "Quiet, legible and consistent, with status dots paired with text labels, and it supports dark mode. Glyph-based step icons and plain checkboxes feel a little less finished.",
+  "maintainability": "Small, focused components (ActionCard, RunCard, Receipt, ScopePanel, Citations) and a mutable timing module for tests. Each RunCard polls independently, so every run in the thread starts its own poll chain on load (run-7698 and run-7702).",
+  "ai_governance": "Actions are off by default and reset after each send. Every change shows a diff table, risk, reversibility and cost. Approve stays disabled for high-risk or irreversible changes until the reviewer ticks a checkbox, and rejection requires a reason. The receipt shows who decided each change and external refs. Low-risk approval is a single inline click with no summary step, and scope is hidden at narrower widths."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "chat thread with inline collapsible run cards + right scope panel (drawer below 1180px)",
+  "justified_patterns": [
+   "inline run card anchored to the question it answers",
+   "scope panel listing source freshness and read vs write tools",
+   "semantic diff and receipt tables",
+   "'need attention' count in history"
+  ],
+  "suspicious_patterns": [
+   "classic chat layout with execution folded into the message stream",
+   "unicode glyph step indicators (◐ ✓ ✕)"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Best contract hygiene: existing test untouched, routes explicit, README documents allowedActions-driven controls",
+  "No horizontal overflow at any width",
+  "Keeps the draft when conversation creation succeeds but sending fails",
+  "Clear partial-failure receipt noting that applied changes were not rolled back"
+ ],
+ "defects": [
+  "Execution state is not separated from the conversation; the approval gate is buried in the thread",
+  "axe serious violation: scrollable-region-focusable",
+  "Scope is not visible at a glance at 1024 or 375",
+  "No skip link and no focus management for drawers",
+  "Retry is sent without confirmation"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "nodes": 1
+    }
+   ],
+   "detail": [
+    {
+     "id": "scrollable-region-focusable",
+     "impact": "serious",
+     "nodes": 1
+    }
+   ]
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 3.5834031999999993,
+  "num_turns": 57,
+  "wall_seconds": 810
+ },
+ "score_py": {
+  "score": 78.0,
+  "verdict": "REVIEW"
+ }
+}

@@ -1,0 +1,210 @@
+{
+ "case": "hospital-operations",
+ "variant": "myh",
+ "agent": "Claude Code 2.1.285 headless (claude -p), model claude-opus-5-5, effort=high (inherited CLAUDE_EFFORT)",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 5,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright: 375/768/1024/1440 overflow on primary+detail(+extra) routes",
+   "playwright: 30-step Tab walk at 1440 and 375 (primary, detail)",
+   "playwright: prefers-reduced-motion=reduce animation check",
+   "axe-core WCAG 2 A/AA scan",
+   "playwright: mock scenarios slow/empty/error/forbidden/partial on primary+detail",
+   "network: requests issued on page load"
+  ],
+  "screenshots": [
+   "screenshots/hospital-operations/myh-primary-375.jpg",
+   "screenshots/hospital-operations/myh-primary-768.jpg",
+   "screenshots/hospital-operations/myh-primary-1024.jpg",
+   "screenshots/hospital-operations/myh-primary-1440.jpg"
+  ],
+  "notes": "The two builds converged on nearly the same domain-appropriate composition: capacity/pressure tiles that filter a triage-grouped queue, with a sticky inspector that becomes a full-screen drill-in below 960px. Both preserve the backend contract, test selectors and routes cleanly, and neither triggers a critical failure. X is stronger on governed-action behaviour and accessibility: it has an explicit inline confirmation with impact text, a receipt stamped with the server-confirmed time, focus moved to the receipt and returned to the originating row, and a 'Needs attention only' filter. Y is somewhat better on patient-data minimisation, keeping the MRN out of queue rows, and adds hold durations and dark mode, but it acknowledges in one click without a preview and uses an incomplete tab pattern. Overall X edges out Y, mainly on interaction-state and governance completeness; the visual and IA quality is roughly equal."
+ },
+ "phase": "baseline",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "The queue is the dominant surface, grouped into 'Needs action'/'In progress' and sorted by urgency then due time. The inspector is subordinate: a sticky right pane at >=960px, full screen with 'Back to queue' below that. The ward strip sits above and doubles as a filter.",
+  "domain_adaptation": "The layout is queue + inspector with capacity context and textual ward pressure ('No beds free', 'Short N beds'), which fits coordinator rounds; there is no generic KPI row. One minus: queue rows show the patient MRN fragment (AlertQueue.tsx row-meta `a.patientRef`), exposing patient-sensitive detail beyond the inspector.",
+  "contract_preservation": "src/api and src/mock are unchanged, alert-row and ward-filter are preserved, and the original ward-filter test passes. Routes /, /alerts and /alerts/:id still work (with /alerts/* plus a catch-all redirect). No new dependencies, and the existing api client's ward/urgency params are used.",
+  "interaction_state": "It has skeleton loading, empty states (filtered vs. unfiltered), error with Retry, 'Could not refresh alerts — showing the last loaded list', 409 with 'Load latest version', a 403 message, read-only for viewers, and a dismissible receipt 'confirmed by the server at HH:MM' set only after the api resolves (AlertDetailPanel handleDone). Busy labels are shown during submits.",
+  "responsive": "No overflow at any width (verify.json). At 375 the wards go into a 2x2 grid with the bed legend hidden and filters stacked, and the detail replaces the queue full screen. The split view starts at >=960px. One small target was flagged per page.",
+  "accessibility": "Axe is clean. All 29 Tab stops show visible focus and none are unnamed. Urgency and status are carried by icon shape plus text. There is a skip link, focus moves to the heading on load, to the receipt after success, and back to the originating row on return. The form has aria-invalid/aria-describedby errors, reduced-motion rules and aria-live counts.",
+  "visual_consistency": "Calm, enterprise-appropriate tokens with one icon family. Rows are a little chip-heavy: 'Not acknowledged' repeats on every row inside a group already titled 'Needs action'.",
+  "maintainability": "The split is sensible: Console, AlertQueue, AlertDetailPanel, CapacityStrip, Badges, Icon, a useResource hook with stale-response guarding, and pure helpers with unit tests (format.test.ts). The ~1500-line index.css is large, but tokens are used consistently.",
+  "ai_governance": "No AI is involved. For the governed acknowledge/escalate actions there is an explicit two-step inline confirmation with an impact statement ('You will become the owner… A handoff entry is recorded'; 'Ownership transfers to X'). Target and reason are required, the receipt is server-confirmed and handles 409/403. Authorization is gated by me.role, with the server still enforcing it."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "capacity strip + grouped alert queue + sticky inspector (split view on desktop/landscape, full-screen drill-in on narrower screens)",
+  "justified_patterns": [
+   "ward capacity tiles as a queue filter with textual pressure labels",
+   "Needs action / In progress grouping",
+   "sticky inspector with handoff timeline",
+   "inline confirmation form with impact text",
+   "URL-persisted filters",
+   "visibility-aware 60s polling"
+  ],
+  "suspicious_patterns": [
+   "capacity tiles resemble a card row, but they carry operational pressure and act as filters rather than vanity KPIs"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": false,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Server-confirmed receipt with timestamp and new owner",
+  "Impact statement before acknowledge/escalate",
+  "Thorough focus management (heading, receipt, return to row)",
+  "'Needs attention only' filter and attention-reason tags in the inspector",
+  "14 tests, including 409, viewer and error paths"
+ ],
+ "defects": [
+  "MRN fragments shown in every queue row, beyond what the queue needs",
+  "Redundant 'Not acknowledged' chip on every Needs-action row",
+  "The partial scenario is not rendered any differently from normal",
+  "Large monolithic CSS file"
+ ],
+ "objective_checks": {
+  "checks": {
+   "lint": "pass",
+   "typecheck": "pass",
+   "test": "pass",
+   "build": "pass"
+  },
+  "diffstat": " 14 files changed, 2841 insertions(+), 101 deletions(-)",
+  "backend_contract_files_changed": [],
+  "existing_tests_modified": [
+   "M\tsrc/App.test.tsx"
+  ],
+  "original_test_selectors_present": {
+   "alert-row": true,
+   "ward-filter": true
+  },
+  "test_cases_total": 14,
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "keyboard_tab_walk": {
+   "primary@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "primary@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@1440": {
+    "stops": 28,
+    "focus_visible": 28,
+    "unnamed": 0
+   },
+   "detail@375": {
+    "stops": 25,
+    "focus_visible": 25,
+    "unnamed": 0
+   }
+  },
+  "reduced_motion": {
+   "primary": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   },
+   "detail": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   }
+  },
+  "axe_wcag_a_aa_violations": {
+   "primary": [],
+   "detail": []
+  },
+  "non_get_requests_on_page_load": [],
+  "scenario_live_regions": {
+   "primary:slow": 1,
+   "primary:empty": 2,
+   "primary:error": 3,
+   "primary:forbidden": 2,
+   "primary:partial": 2,
+   "detail:slow": 1,
+   "detail:empty": 2,
+   "detail:error": 4,
+   "detail:forbidden": 2,
+   "detail:partial": 2
+  },
+  "source_signals": {
+   "prefers_reduced_motion": 1,
+   "focus_visible": 6,
+   "aria_live": 2,
+   "role_status_alert": 6,
+   "dialog": 0,
+   "transition_all": 0,
+   "emoji_ui": 0,
+   "media_queries": 7,
+   "lang_th": 0,
+   "aria_sort_or_caption": 0,
+   "mutation_confirm": 0
+  },
+  "console_errors": []
+ },
+ "session": {
+  "model": "claude-opus-5-5",
+  "cost_usd": 2.7381560000000005,
+  "num_turns": 52,
+  "wall_seconds": 649,
+  "timed_out": false,
+  "tool_counts": {
+   "Skill": 1,
+   "Bash": 33,
+   "Write": 1,
+   "Read": 13,
+   "SendUserFile": 1
+  },
+  "skill_file_refs": [
+   "Bash"
+  ]
+ },
+ "score_py": {
+  "score": 88.0,
+  "verdict": "PASS",
+  "stdout": "case: hospital-operations\nvariant: myh\nscore: 88.00/100\nverdict: PASS"
+ }
+}

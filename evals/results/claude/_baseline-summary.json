@@ -1,0 +1,214 @@
+{
+ "phase": "baseline",
+ "cases": {
+  "ai-agent-workspace": {
+   "control": 73.0,
+   "myh": 84.0,
+   "delta": 11.0,
+   "control_verdict": "FAIL",
+   "myh_verdict": "REVIEW",
+   "improved": [
+    "task_hierarchy",
+    "domain_adaptation",
+    "responsive",
+    "accessibility",
+    "ai_governance"
+   ],
+   "regressed": [],
+   "control_critical": [],
+   "myh_critical": [],
+   "control_ia": "history sidebar + chat thread with inline structured run cards + persistent scope rail",
+   "myh_ia": "history sidebar + conversation with compact scope bar + tabbed Run/Scope inspector (panes on mobile)"
+  },
+  "banking-risk-console": {
+   "control": 82.0,
+   "myh": 87.0,
+   "delta": 5.0,
+   "control_verdict": "REVIEW",
+   "myh_verdict": "PASS",
+   "improved": [
+    "responsive",
+    "accessibility",
+    "ai_governance"
+   ],
+   "regressed": [],
+   "control_critical": [],
+   "myh_critical": [],
+   "control_ia": "alert queue table -> case workspace (evidence column + action/audit rail)",
+   "myh_ia": "alert queue table (stacked cards on mobile) -> case workspace (evidence+audit column + sticky freeze/decision aside)"
+  },
+  "connector-marketplace": {
+   "control": 78.0,
+   "myh": 89.0,
+   "delta": 11.0,
+   "control_verdict": "REVIEW",
+   "myh_verdict": "PASS",
+   "improved": [
+    "contract_preservation",
+    "interaction_state",
+    "responsive",
+    "accessibility",
+    "ai_governance"
+   ],
+   "regressed": [],
+   "control_critical": [],
+   "myh_critical": [],
+   "control_ia": "connection-health table (status + needs-attention filters) above a category-filtered connector catalog with sticky add panel; detail page = status/remediation panel + action card + overview/scopes grid + timeline",
+   "myh_ia": "connection-health table (status filters + search) above a category-filtered connector catalog with sticky add form; detail page = action bar + issue panel + health/access panels + activity timeline"
+  },
+  "devops-control-plane": {
+   "control": 84.0,
+   "myh": 88.0,
+   "delta": 4.0,
+   "control_verdict": "REVIEW",
+   "myh_verdict": "PASS",
+   "improved": [
+    "accessibility",
+    "maintainability"
+   ],
+   "regressed": [
+    "ai_governance"
+   ],
+   "control_critical": [],
+   "myh_critical": [],
+   "control_ia": "incident workspace: stacked telemetry \u2192 investigation \u2192 remediation column with owners/timeline aside; KPI row + needs-attention + triage table list",
+   "myh_ia": "incident workspace: stacked telemetry \u2192 investigation \u2192 remediation column with ownership/timeline aside; triage table list"
+  },
+  "government-service-portal": {
+   "control": 83.0,
+   "myh": 81.0,
+   "delta": -2.0,
+   "control_verdict": "REVIEW",
+   "myh_verdict": "REVIEW",
+   "improved": [],
+   "regressed": [
+    "responsive"
+   ],
+   "control_critical": [],
+   "myh_critical": [],
+   "control_ia": "urgency-sorted case queue + single-column case file with top action panel and inline multi-step workflows",
+   "myh_ia": "SLA-chip-filtered case queue + case record with sticky right-hand next-action panel"
+  },
+  "hospital-operations": {
+   "control": 82.0,
+   "myh": 88.0,
+   "delta": 6.0,
+   "control_verdict": "REVIEW",
+   "myh_verdict": "PASS",
+   "improved": [
+    "interaction_state",
+    "accessibility",
+    "ai_governance"
+   ],
+   "regressed": [],
+   "control_critical": [],
+   "myh_critical": [],
+   "control_ia": "capacity board + triage-grouped alert queue + sticky inspector with action panel (split view on desktop/landscape, full-width drill-in on narrower screens)",
+   "myh_ia": "capacity strip + grouped alert queue + sticky inspector (split view on desktop/landscape, full-screen drill-in on narrower screens)"
+  },
+  "hr-onboarding": {
+   "control": 72.0,
+   "myh": 86.0,
+   "delta": 14.0,
+   "control_verdict": "FAIL",
+   "myh_verdict": "PASS",
+   "improved": [
+    "interaction_state",
+    "responsive",
+    "visual_consistency",
+    "ai_governance"
+   ],
+   "regressed": [],
+   "control_critical": [],
+   "myh_critical": [],
+   "control_ia": "filterable cohort table -> hire workspace (checklist + issues main column, approvals/documents/PII side rail) + mobile card list for manager summary",
+   "myh_ia": "filtered cohort table -> hire workspace (attention header, issues + checklist main, approvals/documents/PII side rail, reordered on mobile) + next-step card grid for managers"
+  },
+  "retail-analytics": {
+   "control": 81.0,
+   "myh": 84.0,
+   "delta": 3.0,
+   "control_verdict": "REVIEW",
+   "myh_verdict": "REVIEW",
+   "improved": [
+    "interaction_state",
+    "responsive",
+    "ai_governance"
+   ],
+   "regressed": [
+    "contract_preservation"
+   ],
+   "control_critical": [],
+   "myh_critical": [],
+   "control_ia": "trend-first analytics workspace: KPI metric selector + trend chart with drill panel, anomaly side rail, comparison table below",
+   "myh_ia": "analytics workspace: metric-selector KPIs + trend (click-to-rescope comparison) + comparison panel, anomaly rail with investigate actions"
+  }
+ },
+ "per_dimension": {
+  "task_hierarchy": {
+   "control_mean": 3.88,
+   "myh_mean": 4,
+   "lift": 0.12
+  },
+  "domain_adaptation": {
+   "control_mean": 3.88,
+   "myh_mean": 4,
+   "lift": 0.12
+  },
+  "contract_preservation": {
+   "control_mean": 4.75,
+   "myh_mean": 4.75,
+   "lift": 0.0
+  },
+  "interaction_state": {
+   "control_mean": 4.12,
+   "myh_mean": 4.75,
+   "lift": 0.62
+  },
+  "responsive": {
+   "control_mean": 3.38,
+   "myh_mean": 4,
+   "lift": 0.62
+  },
+  "accessibility": {
+   "control_mean": 3.62,
+   "myh_mean": 4.38,
+   "lift": 0.75
+  },
+  "visual_consistency": {
+   "control_mean": 3.88,
+   "myh_mean": 4,
+   "lift": 0.12
+  },
+  "maintainability": {
+   "control_mean": 3.88,
+   "myh_mean": 4,
+   "lift": 0.12
+  },
+  "ai_governance": {
+   "control_mean": 3.88,
+   "myh_mean": 4.62,
+   "lift": 0.75
+  }
+ },
+ "verdicts": {
+  "control": {
+   "PASS": 0,
+   "REVIEW": 6,
+   "FAIL": 2,
+   "CRITICAL FAIL": 0
+  },
+  "myh": {
+   "PASS": 5,
+   "REVIEW": 3,
+   "FAIL": 0,
+   "CRITICAL FAIL": 0
+  }
+ },
+ "mean_control": 79.38,
+ "mean_myh": 85.88,
+ "mean_lift": 6.5,
+ "median_lift": 5.5,
+ "cases_improved": 7,
+ "cases_regressed": 1
+}

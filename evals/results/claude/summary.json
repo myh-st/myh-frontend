@@ -1,0 +1,999 @@
+{
+ "generated": "2026-09-30",
+ "environment": {
+  "claude_code": "2.1.285",
+  "model": "claude-opus-5-5 (A/B + scoring); claude-sonnet-5-5 (activation portability sweep)",
+  "effort": "high (CLAUDE_EFFORT inherited, identical for all arms)",
+  "mode": "headless `claude -p --output-format stream-json --dangerously-skip-permissions --no-session-persistence`, fresh fixture copy per run",
+  "platform": "linux container, 4 vCPU, Node 22.22.2, pnpm 10.33, Chromium 141 (Playwright 1.56), axe-core"
+ },
+ "discovery": {
+  ".agents/skills (repo layout)": "NOT discovered by Claude Code (skill absent from init skills list, 0/12 Skill-tool invocations)",
+  ".claude/skills (copy)": "discovered (listed in 48/48 sessions)",
+  ".claude/skills (symlink to .agents/skills)": "discovered (probe)",
+  "ab_treatment_sessions": "8/8 v1 and 8/8 v2 treatment sessions invoked the Skill tool unprompted; 0/8 control sessions referenced the skill"
+ },
+ "activation": {
+  "v1 | .claude/skills | claude-opus-5-5": {
+   "n": 24,
+   "tp": 12,
+   "fp": 0,
+   "fn": 0,
+   "tn": 12,
+   "precision": 1.0,
+   "recall": 1.0,
+   "negative_fp_rate": 0.0,
+   "via_skill_tool": 12,
+   "via_direct_file_read_only": 0,
+   "skill_listed_in_init": 24
+  },
+  "v1 | .agents/skills | claude-opus-5-5": {
+   "n": 12,
+   "tp": 6,
+   "fp": 0,
+   "fn": 0,
+   "tn": 6,
+   "precision": 1.0,
+   "recall": 1.0,
+   "negative_fp_rate": 0.0,
+   "via_skill_tool": 0,
+   "via_direct_file_read_only": 6,
+   "skill_listed_in_init": 0
+  },
+  "v1 | .claude/skills | claude-sonnet-5-5": {
+   "n": 12,
+   "tp": 6,
+   "fp": 0,
+   "fn": 0,
+   "tn": 6,
+   "precision": 1.0,
+   "recall": 1.0,
+   "negative_fp_rate": 0.0,
+   "via_skill_tool": 5,
+   "via_direct_file_read_only": 1,
+   "skill_listed_in_init": 12
+  },
+  "v2 | .claude/skills | claude-opus-5-5": {
+   "n": 12,
+   "tp": 6,
+   "fp": 0,
+   "fn": 0,
+   "tn": 6,
+   "precision": 1.0,
+   "recall": 1.0,
+   "negative_fp_rate": 0.0,
+   "via_skill_tool": 6,
+   "via_direct_file_read_only": 0,
+   "skill_listed_in_init": 12
+  }
+ },
+ "baseline_ab": {
+  "phase": "baseline",
+  "cases": {
+   "ai-agent-workspace": {
+    "control": 73.0,
+    "myh": 84.0,
+    "delta": 11.0,
+    "control_verdict": "FAIL",
+    "myh_verdict": "REVIEW",
+    "improved": [
+     "task_hierarchy",
+     "domain_adaptation",
+     "responsive",
+     "accessibility",
+     "ai_governance"
+    ],
+    "regressed": [],
+    "control_critical": [],
+    "myh_critical": [],
+    "control_ia": "history sidebar + chat thread with inline structured run cards + persistent scope rail",
+    "myh_ia": "history sidebar + conversation with compact scope bar + tabbed Run/Scope inspector (panes on mobile)"
+   },
+   "banking-risk-console": {
+    "control": 82.0,
+    "myh": 87.0,
+    "delta": 5.0,
+    "control_verdict": "REVIEW",
+    "myh_verdict": "PASS",
+    "improved": [
+     "responsive",
+     "accessibility",
+     "ai_governance"
+    ],
+    "regressed": [],
+    "control_critical": [],
+    "myh_critical": [],
+    "control_ia": "alert queue table -> case workspace (evidence column + action/audit rail)",
+    "myh_ia": "alert queue table (stacked cards on mobile) -> case workspace (evidence+audit column + sticky freeze/decision aside)"
+   },
+   "connector-marketplace": {
+    "control": 78.0,
+    "myh": 89.0,
+    "delta": 11.0,
+    "control_verdict": "REVIEW",
+    "myh_verdict": "PASS",
+    "improved": [
+     "contract_preservation",
+     "interaction_state",
+     "responsive",
+     "accessibility",
+     "ai_governance"
+    ],
+    "regressed": [],
+    "control_critical": [],
+    "myh_critical": [],
+    "control_ia": "connection-health table (status + needs-attention filters) above a category-filtered connector catalog with sticky add panel; detail page = status/remediation panel + action card + overview/scopes grid + timeline",
+    "myh_ia": "connection-health table (status filters + search) above a category-filtered connector catalog with sticky add form; detail page = action bar + issue panel + health/access panels + activity timeline"
+   },
+   "devops-control-plane": {
+    "control": 84.0,
+    "myh": 88.0,
+    "delta": 4.0,
+    "control_verdict": "REVIEW",
+    "myh_verdict": "PASS",
+    "improved": [
+     "accessibility",
+     "maintainability"
+    ],
+    "regressed": [
+     "ai_governance"
+    ],
+    "control_critical": [],
+    "myh_critical": [],
+    "control_ia": "incident workspace: stacked telemetry → investigation → remediation column with owners/timeline aside; KPI row + needs-attention + triage table list",
+    "myh_ia": "incident workspace: stacked telemetry → investigation → remediation column with ownership/timeline aside; triage table list"
+   },
+   "government-service-portal": {
+    "control": 83.0,
+    "myh": 81.0,
+    "delta": -2.0,
+    "control_verdict": "REVIEW",
+    "myh_verdict": "REVIEW",
+    "improved": [],
+    "regressed": [
+     "responsive"
+    ],
+    "control_critical": [],
+    "myh_critical": [],
+    "control_ia": "urgency-sorted case queue + single-column case file with top action panel and inline multi-step workflows",
+    "myh_ia": "SLA-chip-filtered case queue + case record with sticky right-hand next-action panel"
+   },
+   "hospital-operations": {
+    "control": 82.0,
+    "myh": 88.0,
+    "delta": 6.0,
+    "control_verdict": "REVIEW",
+    "myh_verdict": "PASS",
+    "improved": [
+     "interaction_state",
+     "accessibility",
+     "ai_governance"
+    ],
+    "regressed": [],
+    "control_critical": [],
+    "myh_critical": [],
+    "control_ia": "capacity board + triage-grouped alert queue + sticky inspector with action panel (split view on desktop/landscape, full-width drill-in on narrower screens)",
+    "myh_ia": "capacity strip + grouped alert queue + sticky inspector (split view on desktop/landscape, full-screen drill-in on narrower screens)"
+   },
+   "hr-onboarding": {
+    "control": 72.0,
+    "myh": 86.0,
+    "delta": 14.0,
+    "control_verdict": "FAIL",
+    "myh_verdict": "PASS",
+    "improved": [
+     "interaction_state",
+     "responsive",
+     "visual_consistency",
+     "ai_governance"
+    ],
+    "regressed": [],
+    "control_critical": [],
+    "myh_critical": [],
+    "control_ia": "filterable cohort table -> hire workspace (checklist + issues main column, approvals/documents/PII side rail) + mobile card list for manager summary",
+    "myh_ia": "filtered cohort table -> hire workspace (attention header, issues + checklist main, approvals/documents/PII side rail, reordered on mobile) + next-step card grid for managers"
+   },
+   "retail-analytics": {
+    "control": 81.0,
+    "myh": 84.0,
+    "delta": 3.0,
+    "control_verdict": "REVIEW",
+    "myh_verdict": "REVIEW",
+    "improved": [
+     "interaction_state",
+     "responsive",
+     "ai_governance"
+    ],
+    "regressed": [
+     "contract_preservation"
+    ],
+    "control_critical": [],
+    "myh_critical": [],
+    "control_ia": "trend-first analytics workspace: KPI metric selector + trend chart with drill panel, anomaly side rail, comparison table below",
+    "myh_ia": "analytics workspace: metric-selector KPIs + trend (click-to-rescope comparison) + comparison panel, anomaly rail with investigate actions"
+   }
+  },
+  "per_dimension": {
+   "task_hierarchy": {
+    "control_mean": 3.88,
+    "myh_mean": 4,
+    "lift": 0.12
+   },
+   "domain_adaptation": {
+    "control_mean": 3.88,
+    "myh_mean": 4,
+    "lift": 0.12
+   },
+   "contract_preservation": {
+    "control_mean": 4.75,
+    "myh_mean": 4.75,
+    "lift": 0.0
+   },
+   "interaction_state": {
+    "control_mean": 4.12,
+    "myh_mean": 4.75,
+    "lift": 0.62
+   },
+   "responsive": {
+    "control_mean": 3.38,
+    "myh_mean": 4,
+    "lift": 0.62
+   },
+   "accessibility": {
+    "control_mean": 3.62,
+    "myh_mean": 4.38,
+    "lift": 0.75
+   },
+   "visual_consistency": {
+    "control_mean": 3.88,
+    "myh_mean": 4,
+    "lift": 0.12
+   },
+   "maintainability": {
+    "control_mean": 3.88,
+    "myh_mean": 4,
+    "lift": 0.12
+   },
+   "ai_governance": {
+    "control_mean": 3.88,
+    "myh_mean": 4.62,
+    "lift": 0.75
+   }
+  },
+  "verdicts": {
+   "control": {
+    "PASS": 0,
+    "REVIEW": 6,
+    "FAIL": 2,
+    "CRITICAL FAIL": 0
+   },
+   "myh": {
+    "PASS": 5,
+    "REVIEW": 3,
+    "FAIL": 0,
+    "CRITICAL FAIL": 0
+   }
+  },
+  "mean_control": 79.38,
+  "mean_myh": 85.88,
+  "mean_lift": 6.5,
+  "median_lift": 5.5,
+  "cases_improved": 7,
+  "cases_regressed": 1
+ },
+ "after_rescoring_3way": {
+  "cases": {
+   "ai-agent-workspace": {
+    "control": 78.0,
+    "myh-v1": 95.0,
+    "myh-v2": 82.0,
+    "v1_lift": 17.0,
+    "v2_lift": 4.0,
+    "v2_minus_v1": -13.0,
+    "criticals": {
+     "control": [],
+     "myh-v1": [],
+     "myh-v2": []
+    }
+   },
+   "banking-risk-console": {
+    "control": 77.0,
+    "myh-v1": 87.0,
+    "myh-v2": 86.0,
+    "v1_lift": 10.0,
+    "v2_lift": 9.0,
+    "v2_minus_v1": -1.0,
+    "criticals": {
+     "control": [],
+     "myh-v1": [],
+     "myh-v2": []
+    }
+   },
+   "connector-marketplace": {
+    "control": 69.0,
+    "myh-v1": 83.0,
+    "myh-v2": 82.0,
+    "v1_lift": 14.0,
+    "v2_lift": 13.0,
+    "v2_minus_v1": -1.0,
+    "criticals": {
+     "control": [],
+     "myh-v1": [],
+     "myh-v2": []
+    }
+   },
+   "devops-control-plane": {
+    "control": 82.0,
+    "myh-v1": 87.0,
+    "myh-v2": 87.0,
+    "v1_lift": 5.0,
+    "v2_lift": 5.0,
+    "v2_minus_v1": 0.0,
+    "criticals": {
+     "control": [],
+     "myh-v1": [],
+     "myh-v2": []
+    }
+   },
+   "government-service-portal": {
+    "control": 84.0,
+    "myh-v1": 88.0,
+    "myh-v2": 97.0,
+    "v1_lift": 4.0,
+    "v2_lift": 13.0,
+    "v2_minus_v1": 9.0,
+    "criticals": {
+     "control": [],
+     "myh-v1": [],
+     "myh-v2": []
+    }
+   },
+   "hospital-operations": {
+    "control": 82.0,
+    "myh-v1": 83.0,
+    "myh-v2": 88.0,
+    "v1_lift": 1.0,
+    "v2_lift": 6.0,
+    "v2_minus_v1": 5.0,
+    "criticals": {
+     "control": [],
+     "myh-v1": [],
+     "myh-v2": []
+    }
+   },
+   "hr-onboarding": {
+    "control": 76.0,
+    "myh-v1": 83.0,
+    "myh-v2": 85.0,
+    "v1_lift": 7.0,
+    "v2_lift": 9.0,
+    "v2_minus_v1": 2.0,
+    "criticals": {
+     "control": [
+      "unsafe_mutation"
+     ],
+     "myh-v1": [],
+     "myh-v2": []
+    }
+   },
+   "retail-analytics": {
+    "control": 77.0,
+    "myh-v1": 84.0,
+    "myh-v2": 83.0,
+    "v1_lift": 7.0,
+    "v2_lift": 6.0,
+    "v2_minus_v1": -1.0,
+    "criticals": {
+     "control": [],
+     "myh-v1": [],
+     "myh-v2": []
+    }
+   }
+  },
+  "per_dimension": {
+   "task_hierarchy": {
+    "control": 3.88,
+    "myh-v1": 4.12,
+    "myh-v2": 4.12
+   },
+   "domain_adaptation": {
+    "control": 3.88,
+    "myh-v1": 4,
+    "myh-v2": 4.12
+   },
+   "contract_preservation": {
+    "control": 4.88,
+    "myh-v1": 4.88,
+    "myh-v2": 4.75
+   },
+   "interaction_state": {
+    "control": 3.75,
+    "myh-v1": 4.75,
+    "myh-v2": 4.88
+   },
+   "responsive": {
+    "control": 3.38,
+    "myh-v1": 4.12,
+    "myh-v2": 3.88
+   },
+   "accessibility": {
+    "control": 3.38,
+    "myh-v1": 4.12,
+    "myh-v2": 4.25
+   },
+   "visual_consistency": {
+    "control": 3.88,
+    "myh-v1": 4,
+    "myh-v2": 3.88
+   },
+   "maintainability": {
+    "control": 4,
+    "myh-v1": 4,
+    "myh-v2": 3.88
+   },
+   "ai_governance": {
+    "control": 3.75,
+    "myh-v1": 4.5,
+    "myh-v2": 4.75
+   }
+  },
+  "verdicts": {
+   "control": {
+    "PASS": 0,
+    "REVIEW": 6,
+    "FAIL": 1,
+    "CRITICAL FAIL": 1
+   },
+   "myh-v1": {
+    "PASS": 4,
+    "REVIEW": 4,
+    "FAIL": 0,
+    "CRITICAL FAIL": 0
+   },
+   "myh-v2": {
+    "PASS": 5,
+    "REVIEW": 3,
+    "FAIL": 0,
+    "CRITICAL FAIL": 0
+   }
+  },
+  "mean_control": 78.12,
+  "mean_myh-v1": 86.25,
+  "mean_myh-v2": 86.25
+ },
+ "rater_reliability": {
+  "same_builds_rescored": 16,
+  "mean_abs_score_diff": 3.94,
+  "max_abs_diff": 11.0,
+  "dimension_scores_within_1": "144/144",
+  "v1_lift_sign_agreement": "7/8 cases",
+  "critical_failure_disagreement": "hr-onboarding control: pass-2 scorer flagged unsafe_mutation (one-click approval decision); pass-1 scorer considered and declined it"
+ },
+ "objective_totals": {
+  "control": {
+   "overflow_combos": 1,
+   "axe_nodes": 19,
+   "reduced_motion_rules": 8,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": 0,
+   "contract_files_changed": 0
+  },
+  "myh-v1": {
+   "overflow_combos": 0,
+   "axe_nodes": 5,
+   "reduced_motion_rules": 9,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": 0,
+   "contract_files_changed": 0
+  },
+  "myh-v2": {
+   "overflow_combos": 6,
+   "axe_nodes": 3,
+   "reduced_motion_rules": 8,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": 0,
+   "contract_files_changed": 0
+  }
+ },
+ "objective_per_run": {
+  "hospital-operations|control": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "113/113",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 14
+  },
+  "hospital-operations|myh-v1": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "111/111",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 14
+  },
+  "banking-risk-console|control": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 8,
+   "axe_ids": [
+    "color-contrast"
+   ],
+   "focus_visible": "114/114",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 22
+  },
+  "banking-risk-console|myh-v1": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 1,
+   "axe_ids": [
+    "scrollable-region-focusable"
+   ],
+   "focus_visible": "114/114",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 19
+  },
+  "devops-control-plane|control": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 9,
+   "axe_ids": [
+    "color-contrast"
+   ],
+   "focus_visible": "116/116",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 17
+  },
+  "devops-control-plane|myh-v1": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 1,
+   "axe_ids": [
+    "scrollable-region-focusable"
+   ],
+   "focus_visible": "118/118",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 18
+  },
+  "hr-onboarding|control": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 1,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "118/118",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 25
+  },
+  "hr-onboarding|myh-v1": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 1,
+   "axe_ids": [
+    "color-contrast"
+   ],
+   "focus_visible": "116/116",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 22
+  },
+  "retail-analytics|control": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "112/120",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 33
+  },
+  "retail-analytics|myh-v1": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 2,
+   "axe_ids": [
+    "color-contrast"
+   ],
+   "focus_visible": "110/118",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 24
+  },
+  "ai-agent-workspace|control": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 2,
+   "axe_ids": [
+    "scrollable-region-focusable"
+   ],
+   "focus_visible": "115/115",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 17
+  },
+  "ai-agent-workspace|myh-v1": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "115/115",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 15
+  },
+  "connector-marketplace|control": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "112/112",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 20
+  },
+  "connector-marketplace|myh-v1": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "110/110",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 23
+  },
+  "government-service-portal|control": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "116/116",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 18
+  },
+  "government-service-portal|myh-v1": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "114/114",
+   "reduced_motion_rules": 2,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 19
+  },
+  "hospital-operations|myh-v2": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "113/113",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 11
+  },
+  "banking-risk-console|myh-v2": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 3,
+   "axe_ids": [
+    "aria-prohibited-attr"
+   ],
+   "focus_visible": "114/114",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 20
+  },
+  "devops-control-plane|myh-v2": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "114/114",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 19
+  },
+  "hr-onboarding|myh-v2": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "118/118",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 23
+  },
+  "retail-analytics|myh-v2": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "112/118",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 24
+  },
+  "ai-agent-workspace|myh-v2": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 6,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "113/113",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 14
+  },
+  "connector-marketplace|myh-v2": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "112/112",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 16
+  },
+  "government-service-portal|myh-v2": {
+   "checks": {
+    "lint": "pass",
+    "typecheck": "pass",
+    "test": "pass",
+    "build": "pass"
+   },
+   "overflow_combos": 0,
+   "axe_nodes": 0,
+   "axe_ids": [],
+   "focus_visible": "114/114",
+   "reduced_motion_rules": 1,
+   "running_anims_under_reduce": 0,
+   "non_get_on_load": [],
+   "contract_files_changed": [],
+   "test_cases": 18
+  }
+ },
+ "states_observed_by_scorers": {
+  "control (pass 1)": {
+   "loading": 8,
+   "empty": 8,
+   "error": 8,
+   "permission": 8,
+   "stale": 8,
+   "partial": 7,
+   "success_receipt": 7,
+   "confirmation": 6,
+   "recovery": 8
+  },
+  "myh-v1 (pass 1)": {
+   "loading": 8,
+   "empty": 8,
+   "error": 8,
+   "permission": 8,
+   "stale": 8,
+   "partial": 7,
+   "success_receipt": 8,
+   "confirmation": 8,
+   "recovery": 8
+  },
+  "myh-v2 (pass 2)": {
+   "loading": 8,
+   "empty": 8,
+   "error": 8,
+   "permission": 8,
+   "stale": 8,
+   "partial": 7,
+   "success_receipt": 8,
+   "confirmation": 7,
+   "recovery": 8
+  }
+ },
+ "loading_state_check": {
+  "premature_zero_or_empty_copy_in_slow_render": {
+   "control": 1,
+   "myh-v1": 3,
+   "myh-v2": 0
+  },
+  "live_regions_in_slow_render": {
+   "control": 8,
+   "myh-v1": 7,
+   "myh-v2": 14
+  }
+ },
+ "palette_contrast_check": {
+  "muted_#64748b_on_background_#f6f8fb": 4.47,
+  "success_#059669_on_white": 3.77,
+  "warning_#d97706_on_white": 3.19,
+  "v1_runs_failing_on_this_exact_pair": [
+   "hr-onboarding",
+   "retail-analytics"
+  ],
+  "v2_color_contrast_nodes": 0
+ },
+ "cost": {
+  "ab-control": {
+   "runs": 8,
+   "total_usd": 25.69,
+   "mean_usd": 3.21
+  },
+  "ab-myh": {
+   "runs": 8,
+   "total_usd": 29.72,
+   "mean_usd": 3.72
+  },
+  "v2-myh": {
+   "runs": 8,
+   "total_usd": 26.94,
+   "mean_usd": 3.37
+  },
+  "activation_usd": 17.06
+ }
+}

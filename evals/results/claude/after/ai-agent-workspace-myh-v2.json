@@ -1,0 +1,114 @@
+{
+ "case": "ai-agent-workspace",
+ "variant": "myh-v2",
+ "skill_version": "v2 (this PR)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 4,
+  "interaction_state": 5,
+  "responsive": 3,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three keep the backend contract, make only GET requests on load, gate every external mutation per action using server allowedActions, and issue receipts with partial-failure recovery. None triggers a critical failure. Z is the most complete: execution is separated into a tabbed Run/Scope inspector at every width, scope stays visible, there is no overflow and axe is clean, and every mutation goes through a dialog that explains its side effects. X matches Z on governance and state handling and has the richest approval dialogs, but it overflows horizontally at 375, 768 and 1024 and replaced the explicit routes with a catch-all. Y has the best contract hygiene (existing test untouched, explicit routes) and no overflow, but it embeds execution state inline in the chat thread. Y also hides scope behind a button below 1180px and has an axe serious violation with no skip link, so it scores lower on domain adaptation and accessibility."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Three-column shell: history, conversation with composer, separate Run panel (steps, proposed changes, receipt). The pending approval shows up in the history badge, the Run tab badge and a draft answer marked 'nothing has been written yet'. At 1024 and below the approval gate sits behind a Conversation/Run toggle.",
+  "domain_adaptation": "Conversation carries intent and the run inspector (src/workspace/RunPanel.tsx) carries execution state, which is the separation the case asks for. The scope bar is always visible and shows sources, write tools, role and budget, with details on demand. No generic KPI or hero elements.",
+  "contract_preservation": "src/api and src/mock are untouched, all three test IDs are kept, and approve/reject/retry/cancel buttons follow the server's per-action allowedActions. Routes were collapsed into a single `path=\"*\"` catch-all (App.tsx), so unknown URLs now render the workspace. The original test was also edited to pass the new pollIntervalMs prop.",
+  "interaction_state": "Every GET has separate skeleton, error-with-retry and empty states (hooks.ts useResource). STALE_VERSION and INVALID_STATE reload the run with an explanation. There is a 'Live updates paused' callout, a not-found view, blocked-composer reasons, and a partially_failed callout that says what stayed applied. Retry and cancel both go through confirmation dialogs.",
+  "responsive": "The layout does recompose: pane tabs below 1180px and a slide-out drawer below 860px. However, verify.json reports horizontal overflow at 375 (391px), 768 (784px) and 1024 (1132px, 108px over) on both pages. The 1024 scope chips wrap onto three lines.",
+  "accessibility": "axe reports no violations. Focus is visible on 29 of 29 tab stops with no unnamed stops. There is a skip link, the dialog traps focus and returns it to the opener, badges pair icons with text, an sr-only aria-live run status exists, and the reduced-motion rule is present.",
+  "visual_consistency": "Calm, restrained enterprise styling with a consistent badge and callout system and a single icon family. Action cards inside the run panel get a little dense, but there is no card wall.",
+  "maintainability": "Clear split into ui/ primitives (Badge, Callout, Dialog, Skeleton), format maps and workspace/ feature components. useRun sequences poll and mutation responses so a stale poll cannot overwrite a decision. Workspace.tsx is somewhat large.",
+  "ai_governance": "Actions are off by default. Composer copy states the billable cost. Each approval opens a dialog showing system, target, risk, reversibility, cost and a field diff, with the button naming the exact mutation, and high-risk changes need a tick-box acknowledgement. Rejection requires a reason. The receipt shows refs, errors and actual versus estimated cost."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "history sidebar + conversation + separate run inspector, with an always-visible scope bar",
+  "justified_patterns": [
+   "separate run/execution inspector",
+   "persistent scope chip bar with budget meter",
+   "per-action approval dialog with diff and high-risk acknowledgement",
+   "draft answer shown in transcript while approval is pending",
+   "receipt with external refs"
+  ],
+  "suspicious_patterns": [
+   "conventional left-sidebar chat shell (justified here by conversation history)",
+   "'A' letter-mark brand tile"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Strongest governed-action dialogs: mutation named on the button, diff, risk, reversibility, cost",
+  "Poll/mutation sequencing guards against stale overwrites",
+  "axe clean with full focus coverage and a focus-trapped dialog",
+  "Read-only by default, with billable-run copy in the composer"
+ ],
+ "defects": [
+  "Horizontal page overflow at 375, 768 and 1024 (1132px scrollWidth at 1024)",
+  "Catch-all route replaces the explicit / and /c/:id routes",
+  "Scope bar wraps awkwardly at 1024",
+  "Stale-source count is hidden whenever any source is unavailable (ScopeBar only shows one)"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": true,
+    "768": true,
+    "1024": true,
+    "1440": false
+   },
+   "detail": {
+    "375": true,
+    "768": true,
+    "1024": true,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 2.905207599999999,
+  "num_turns": 39,
+  "wall_seconds": 632
+ },
+ "score_py": {
+  "score": 82.0,
+  "verdict": "REVIEW"
+ }
+}

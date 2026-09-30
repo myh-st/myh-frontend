@@ -53,6 +53,15 @@ cp -R .agents/skills/myh-frontend <target-repo>/.agents/skills/
 
 For clients that require a vendor-specific skills directory, copy the same `myh-frontend` folder to that client's supported skill path. Keep one canonical source of the skill to avoid drift.
 
+**Claude Code** does not scan `.agents/skills/`. It discovers project skills in `.claude/skills/` (or personal skills in `~/.claude/skills/`). Keep `.agents/skills/myh-frontend` canonical and link it:
+
+```bash
+mkdir -p .claude/skills
+ln -s ../../.agents/skills/myh-frontend .claude/skills/myh-frontend
+```
+
+A copied folder works too. See [`evals/results/claude/REPORT.md`](evals/results/claude/REPORT.md) for the discovery evidence.
+
 ## Use
 
 Typical prompts:

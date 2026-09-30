@@ -8,18 +8,23 @@ Use these defaults only when the product does not already have stronger brand or
 |---|---|---|
 | Ink | `#0f172a` | headings, high-emphasis text |
 | Text | `#334155` | primary body text |
-| Muted | `#64748b` | descriptions, metadata |
+| Muted | `#5b6b80` | descriptions, metadata (≥ 4.5:1 on Surface, Surface soft and Background) |
 | Background | `#f6f8fb` | app shell |
 | Surface | `#ffffff` | cards, dialogs, work surfaces |
 | Surface soft | `#f8fafc` | quiet grouping |
 | Border | `#e2e8f0` | default separators |
 | Accent | `#155eef` | primary action, active state |
 | Accent deep | `#0b4bd8` | primary hover/pressed |
-| Success | `#059669` | successful state |
-| Warning | `#d97706` | review/attention state |
+| Success | `#059669` | successful state — fills, borders, icons |
+| Success text | `#047857` | success copy on light surfaces |
+| Warning | `#d97706` | review/attention state — fills, borders, icons |
+| Warning text | `#b45309` | warning copy on light surfaces |
 | Danger | `#dc2626` | destructive/error state |
+| Danger text | `#b91c1c` | small error copy on tinted fills |
 
 Do not expose meaning through color alone. Pair semantic colors with text, iconography, or shape/state labels.
+
+Contrast is part of the token contract: every text/background pair must reach 4.5:1 (3:1 for large text and essential non-text UI). The base Success and Warning hues are below 4.5:1 as text on white, so use the *text* variants for copy and badges. When you introduce a new tinted background, re-check Muted and semantic text on it rather than assuming the defaults still pass.
 
 ## Typography
 

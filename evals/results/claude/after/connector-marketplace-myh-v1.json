@@ -1,0 +1,112 @@
+{
+ "case": "connector-marketplace",
+ "variant": "myh-v1",
+ "skill_version": "v1 (original)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three adopt the same catalog + connection-health IA, keep backend files and test selectors intact, remove the old one-click Remove and secret echo, and gate disconnect behind an impact dialog. No critical failures were found. X is the most balanced: it leaves the original test file untouched, shows remediation per row, and has a well-ordered detail page with solid focus management. Its only real weakness is fake zero counts during loading and error. Y has the richest state and governance handling: an ack checkbox, credential-deletion disclosure, redaction, no fake zeros, and row-level recommended actions. That is offset by visible polish defects (search icon overlap, misaligned headers) and a KPI-like status-tile row, and on mobile the detail actions are buried. Z is compact and calm and handles partial telemetry best at list level. It trails on state correctness (misleading empty catalog on error, Promise.all coupling), mobile labelling, dialog accessibility and disconnect gating."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Connections health table comes first. Each row has a state-derived next-step link (Reauthorize/Reconnect/Review issue/Manage) from nextStep() in ConnectionsPage.tsx. The detail page opens with an action bar whose primary button is picked from allowedActions, with Disconnect set apart on the right. The catalog and add form are clearly secondary, but at 375 the page is 8443px long.",
+  "domain_adaptation": "Uses catalog + connection-health: a status-filtered health table with error code and remediation per row, plus a category-tabbed catalog with auth method, directions and an in-use count. There is no KPI row or dashboard chrome. Only the 'N need attention' text sits above the list.",
+  "contract_preservation": "No src/api or src/mock changes. App.test.tsx is unchanged and all 7 original selectors exist. Routes are identical. Per-connection actions are filtered by server allowedActions. The add form is gated on the connections:manage permission, and the server still enforces it.",
+  "interaction_state": "Covers skeleton loading, empty, error with retry, not-found, a view-only notice, dataStatus badges and a detail banner, STALE_VERSION with a Reload button, an 'impact may be incomplete' warning, and receipts for test/rotate/disconnect/OAuth. Weakness: status chips show 'All 0 / Connected 0…' during slow loading and on error (verify primary:slow/error), which misrepresents state.",
+  "responsive": "No overflow at any width. Below 900px the table becomes labelled cards (td data-label). The catalog/form grid collapses at 1100px, and the detail action bar stacks at 375. The mobile list page is very long because the full catalog sits above the form.",
+  "accessibility": "axe is clean. 30/30 Tab stops are focus-visible with none unnamed. The Dialog has a focus trap, Escape (disabled while busy) and focus return. Status uses icon + text, reduced-motion rules exist, and fields use aria-invalid/aria-describedby. Search inputs replace the outline with a box-shadow.",
+  "visual_consistency": "Calm, restrained enterprise styling. Coloured left rules on problem rows add emphasis without noise. The catalog cards fit a catalog. The single-letter logo tiles are mild decoration.",
+  "maintainability": "Split into ui/ files (components, format, Dialog, icons) with a small useLoad and a shared describeError. Client validation duplicates server rules, which is documented. There are 18 new behaviour tests.",
+  "ai_governance": "The disconnect dialog lists the scopes to revoke (label + id), sync jobs, dependent workflows, retention and the credential purge. The confirm button stays disabled until impact loads, and incomplete impact triggers a warning. The receipt reports revokedScopes and affectedSyncJobs from the server. There is no explicit acknowledgement step."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "health table (status filters + next-step per row) above catalog grid + sticky add form; detail = action bar + issue panel + health/access/activity",
+  "justified_patterns": [
+   "catalog cards for connector discovery",
+   "status filter chips with counts",
+   "issue panel with remediation first",
+   "impact-first disconnect dialog",
+   "write-only credential inputs"
+  ],
+  "suspicious_patterns": [
+   "letter-avatar logo tiles on catalog cards (mild)"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Original test file untouched while all selectors are kept",
+  "Per-row remediation and state-appropriate next step",
+  "Disconnect confirmation is blocked until impact loads, and names scopes, jobs, workflows and retention",
+  "Solid dialog focus management"
+ ],
+ "defects": [
+  "Status counts read 0 during loading and on error",
+  "Very long mobile page (catalog before the add form)",
+  "'Nothing was changed' copy shown on read-only load errors"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 2.8246450000000003,
+  "num_turns": 50,
+  "wall_seconds": 591
+ },
+ "score_py": {
+  "score": 83.0,
+  "verdict": "REVIEW"
+ }
+}

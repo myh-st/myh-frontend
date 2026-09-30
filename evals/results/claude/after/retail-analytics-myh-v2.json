@@ -1,0 +1,114 @@
+{
+ "case": "retail-analytics",
+ "variant": "myh-v2",
+ "skill_version": "v2 (this PR)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds keep the Reporting API contract (no src/api or src/mock edits, GET-only page loads, original selectors preserved; region-row is generated dynamically in X and Z). All converge on a similar analytics-first IA: interactive KPI switch tiles, a hand-built SVG trend with prior-period overlay and anomaly markers, and a drillable region/store/category comparison with trend-bucket drill-down. X is the most complete: explicit no-sales empty state, inline viewer lock on Export, a confirmation dialog with receipt, and an anomaly 'Investigate' that scopes filters, metric and period. On mobile it caps the anomaly list so the trend stays primary; its main flaws are a detail-page contrast issue and a clipped column at 768. Z is close behind, with better heading semantics and focus treatment, but shows misleading $0/0.0% tiles in the empty scenario, reveals the viewer restriction only after the panel opens, and runs long on mobile. Y has the richest drill panel and proactive stale-data detection, but trails on presentation: no h1, an awkward 768 filter layout, a horizontally scrolling mobile table, unicode-glyph icons and zero-valued empty tiles."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Z",
+ "scorer_rationale": {
+  "task_hierarchy": "The page flows from KPI switch tiles to a full-width trend, then comparison and anomalies side by side. Selecting a trend bucket scopes the comparison ('Showing Sep 28 only · Back to full range').",
+  "domain_adaptation": "Analytics-first. Anomalies offer Show on trend and Filter to scope or Open store, and fleet-wide category and segment signals are labelled when a store or region is filtered. The store category links back to a store+category-filtered overview.",
+  "contract_preservation": "src/api and src/mock are untouched and loads are GET-only. region-row is kept via rowTestId={`${dimension}-row`} (grep false negative), the export-button testid stays on the trigger, and the other selectors are preserved.",
+  "interaction_state": "Covers skeleton loading, error with retry, partial banner and pre-export rejection warning, STALE_VERSION reload, and a receipt with server-applied filters. The empty scenario shows '$0 / 0.0% vs 0.0%' tiles, and store detail wrongly attributes missing comparison to 'opened Mar 22, 2014'. The viewer only learns export is unavailable after opening the panel.",
+  "responsive": "No overflow. Filters collapse at 375 and the comparison becomes stacked cards at ≤820px. The anomaly list is uncapped (8 full items), making mobile pages long, and there is large whitespace under the comparison at 1440.",
+  "accessibility": "Has a skip link, h1 per page, a box-shadow focus ring with forced-colors outline fallback (focusVisible on all 30 stops at 375), and a chart keyboard nav with describedby instructions and a data table. Export panel focus management and Escape work, and axe is clean.",
+  "visual_consistency": "Clean, restrained, consistent icon set. The anomaly column is long and uneven against the comparison card.",
+  "maintainability": "Compact (3.6k LOC) with clear lib split (useApi with seq guard, filters.ts, metrics.ts, describeFilters). The 'Quarter to date' preset is hard-wired to defaultRange.",
+  "ai_governance": "The export panel lists the exact slice and format before 'Start CSV export', disables during flight, polls, and shows a receipt with rowCount, snapshot, server-applied filters and download. It gives an explicit partial-data rejection warning."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "KPI switch + full-width trend + comparison/anomaly split with bucket-scoped breakdown",
+  "justified_patterns": [
+   "bucket-scoped comparison drill",
+   "prior-period overlay with metric-matched anomaly rules",
+   "anomaly scope actions",
+   "mobile card-table recomposition",
+   "server-confirmed export receipt"
+  ],
+  "suspicious_patterns": [
+   "four-KPI tile row (interactive, mitigated)"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": false,
+  "recovery": true
+ },
+ "strengths": [
+  "Proper heading structure and consistent focus ring",
+  "Comparison scoped to the selected trend bucket",
+  "Receipt shows filters as applied by the server",
+  "Clean mobile card recomposition of the comparison"
+ ],
+ "defects": [
+  "Empty scenario renders $0/0.0% tiles with 'vs 0.0%'",
+  "Store detail misattributes missing prior data to the opening date",
+  "Viewer restriction is hidden until the export panel is opened",
+  "Uncapped anomaly list lengthens mobile",
+  "'Quarter to date' preset hard-mapped to defaultRange"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 4.1557008,
+  "num_turns": 67,
+  "wall_seconds": 825
+ },
+ "score_py": {
+  "score": 83.0,
+  "verdict": "REVIEW"
+ }
+}

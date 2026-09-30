@@ -1,0 +1,123 @@
+{
+ "case": "hr-onboarding",
+ "variant": "control",
+ "skill_version": null,
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 3,
+  "responsive": 3,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 2
+ },
+ "not_applicable": [],
+ "critical_failures": [
+  "unsafe_mutation"
+ ],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three keep the HR contract intact (no src/api or src/mock edits, selectors kept, allowedActions-driven gating) and build a checklist-first hire workspace with dependency reasons, partial-vault handling and stale-version recovery. Y has the most complete governed-action behaviour: dialogs that state the effect for approve, reject, resolve and request-info, versioned receipts, and error copy that separates a loading failure from empty data. Its weaknesses are overlapping text in the 375px list cards and approvals placed below the long checklist. Z comes close: inline confirmations, keyed mutation errors, and the best mobile recomposition (decisions first). It is let down by a start-date-first hire list, zero counts shown while loading or after an error, a KPI-tile row, and a heuristic that can misattribute 'Your next step'. X has the strongest checklist ordering and PII restraint, plus excellent focus styling. However, it executes approvals with a single click and no confirmation (flagged unsafe_mutation), overflows at 768px, and gives almost no success receipts."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "The hires list sorts 'Needs attention first' by default and has clickable status counts. The hire page opens with a header, then 'needs attention' chips linking to sections, then exceptions and checklist as the main column with approvals and docs in the side column. The primary work is clear.",
+  "domain_adaptation": "Checklist-first workspace. dependencyOrder() sorts tasks so each follows the tasks it depends on. Each task shows owner, due date, overdue flag, depends-on and approval link. The manager summary groups hires into 'Waiting on you' and 'Everyone else'. PII appears once, collapsed, and only for HR partners.",
+  "contract_preservation": "No src/api or src/mock changes. hire-row, cohort-filter and task-checkbox are kept. The status filter uses the server's existing ?status= parameter. Routes are unchanged and a 404 route was added. Controls are gated on allowedActions, and the server stays the authority.",
+  "interaction_state": "Loading, empty/no-match, error with retry, 403/404, read-only viewer, partial document vault and a STALE_VERSION banner (keeps typed input, pauses edits) are all handled. However, approvals have no confirmation, task updates give no receipt, and a failed /api/me replaces the whole app, header included (primary:error shows only 'Could not load your session').",
+  "responsive": "No overflow at 375, 1024 or 1440. At 375 the table becomes stacked cards and the manager cards are phone-first. At 768 the primary list overflows (scrollWidth 805 > 768; table.table offenders) because the card breakpoint is 760px. The progress bar collapses to text in mobile cards.",
+  "accessibility": "The Tab walk shows 29/29 visible focus stops with a 3px outline and no unnamed stops. Axe is clean on both pages. Statuses use icon plus text (■ ▲ ● ✓). The progressbar has aria-valuetext. Filters are labelled. There is no skip link.",
+  "visual_consistency": "Calm, restrained enterprise styling on a neutral palette. Cards are used consistently but not decoratively.",
+  "maintainability": "Feature folders (hires/hire/manager) share a HireContext run() that serialises mutations. Rule hints live in lib/checklist.ts and a small ui.tsx holds primitives. 18 new tests and a README section were added.",
+  "ai_governance": "No AI. Governed approvals and exception resolution run directly with no confirmation or effect preview. The only receipt is 'Request sent.' for info requests. Stale-version handling is good."
+ },
+ "critical_failure_evidence": {
+  "unsafe_mutation": "src/features/hire/Approvals.tsx: the Approve button calls decide('approve'), which runs api.decideApproval straight away. There is no confirmation step or summary of the effect. An approval marks the task done and cannot be undone through the API (e.g. signing-bonus disbursement sign-off). Reject is also a single click once a comment is typed. The workspace test 'lets the approver approve' confirms a single click executes it."
+ },
+ "overfitting": {
+  "dominant_ia": "attention-sorted cohort table -> hire workspace (exceptions + dependency-ordered checklist main column; approvals/docs/PII side column) + grouped phone-first manager cards",
+  "justified_patterns": [
+   "dependency-ordered checklist with blocker reasons",
+   "attention chips linking to sections",
+   "'Waiting on you' grouping for managers",
+   "PII hidden until revealed, shown once",
+   "status counts as filters"
+  ],
+  "suspicious_patterns": [
+   "status count buttons are a mild KPI-like row, but they act as filters"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": false,
+  "recovery": true
+ },
+ "strengths": [
+  "True dependency ordering of tasks",
+  "Stale-version flow keeps typed input and pauses edits until reload",
+  "Document vault outage explicitly worded as 'not missing'",
+  "Strong 3px focus-visible and clean axe"
+ ],
+ "defects": [
+  "Approve/Reject run with no confirmation step",
+  "768px horizontal overflow on the hires list",
+  "A failed session load hides the whole app, including navigation",
+  "Almost no success receipts; only info requests show 'Request sent.'"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": true,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 1.9640256000000003,
+  "num_turns": 24,
+  "wall_seconds": 455
+ },
+ "score_py": {
+  "score": 76.0,
+  "verdict": "CRITICAL FAIL"
+ }
+}

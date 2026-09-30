@@ -1,0 +1,121 @@
+{
+ "case": "government-service-portal",
+ "variant": "control",
+ "skill_version": null,
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds are strong, contract-preserving redesigns that follow the same case/queue-first shape. None has a critical failure: only GET calls on load, no api/mock edits, allowedActions-only gating, confirm steps before mutations, and success only after the server responds. Y is the most complete: graceful degradation when /api/me fails, action-first ordering on mobile, the best tablet/phone recomposition, and receipts citing the server audit ID. It costs 8 lint warnings and a monolithic ActionPanel. X matches Y on state coverage and accessibility and has the richest bilingual/date handling, but the action panel ends up at the bottom on mobile and evidence rows are cramped at 375px. Z has the most distinctive government idiom (GOV.UK focus, breadcrumb, printable audit), the cleanest code and the best pre-decision evidence warning. It is let down by plain loading text, 12 small touch targets, KPI-like SLA tiles and duplicated evidence presentations."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Z",
+ "scorer_rationale": {
+  "task_hierarchy": "The queue has large search, a filter grid, SLA tiles and an urgency sort. The detail page is single column, with an Actions box directly under the overview and forms opening inline above the evidence, which is clearly task-first. The in-page nav and a 'My queue' nav tab help. Evidence is shown twice (checklist plus table), which adds length.",
+  "domain_adaptation": "GOV.UK-style public-sector idiom that suits a government case console: breadcrumb, overview summary grid, required-documents checklist, printable audit page and nav tabs for My queue / Awaiting approval. The SLA tiles are big-number boxes that read somewhat like KPI cards, though they act as filters.",
+  "contract_preservation": "No api/mock changes, routes are unchanged (no extra routes), test selectors are kept and the original tests are unchanged. Actions are gated on allowedActions (CaseDetailPage can()), every mutation sends version, and setCase uses the server response.",
+  "interaction_state": "Loading is a plain 'Loading…' text (no skeleton). There are error+retry states, empty vs filtered-empty, the read-only explanation, a per-row stale tag, an unavailable-sources notice, confirm/review steps and reload on STALE_VERSION. The success notice has no audit link, and a failed /api/me blocks the whole app (primary-scenario-error.png). The partial list shows no list-level stale notice.",
+  "responsive": "No overflow at any width; tables become labelled cards below 820px and filters/tiles restack. verify.json flags 12 small touch targets on the queue at every width and 4 on the detail page.",
+  "accessibility": "axe clean; strong yellow+black GOV.UK focus style (links use a fill instead of an outline, and still pass the focus check); skip link; focus moves to main on navigation; ErrorSummary; lang marking; forced-colors and print rules. The 12 small targets and the lack of an aria-live results region on filter change are weaker than the other builds (the count is role=status).",
+  "visual_consistency": "Coherent, high-contrast government look (navy header, yellow rule, square boxes). It is consistent but heavier. Duplicated evidence presentations and the big-number SLA tiles add visual weight.",
+  "maintainability": "Cleanest module split (lib/sla, lib/evidence, lib/errors, features/*, components/*) with 0 lint warnings, the smallest diff, and 9 workflow tests. CaseDetailPage is still ~500 lines.",
+  "ai_governance": "The decision review warns about unverified or missing evidence before a granting decision. Each option is labelled approval-required or final. Supervisor approval has an explicit confirm step, a return needs a comment, and a supervisor who proposed the decision is told another supervisor must approve. Confirm button labels are generic, though, and the receipt does not reference the audit entry."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "GOV.UK-style single-column case page (overview grid → actions → evidence) with a filterable queue table",
+  "justified_patterns": [
+   "required-document checklist",
+   "evidence risk warning in decision review",
+   "My queue / Awaiting approval nav",
+   "printable audit trail",
+   "breadcrumb navigation"
+  ],
+  "suspicious_patterns": [
+   "big-number SLA tiles resembling a KPI row (though functional filters)",
+   "evidence shown twice (checklist + full table)"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Pre-decision evidence warning is strong governance",
+  "Very strong focus visibility (GOV.UK pattern)",
+  "Leanest, cleanest code organisation with zero lint warnings",
+  "Actions placed immediately below the case overview"
+ ],
+ "defects": [
+  "12 small touch targets on the queue (verify.json)",
+  "Plain text loading states",
+  "App blocked entirely when /api/me fails",
+  "Success receipt lacks an audit reference; confirm buttons don't name the decision",
+  "No list-level stale banner in the partial scenario"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 4.620316800000001,
+  "num_turns": 56,
+  "wall_seconds": 971
+ },
+ "score_py": {
+  "score": 84.0,
+  "verdict": "REVIEW"
+ }
+}

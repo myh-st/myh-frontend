@@ -1,0 +1,119 @@
+{
+ "case": "government-service-portal",
+ "variant": "myh-v2",
+ "skill_version": "v2 (this PR)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 5,
+  "domain_adaptation": 5,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 5,
+  "accessibility": 5,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds are strong, contract-preserving redesigns that follow the same case/queue-first shape. None has a critical failure: only GET calls on load, no api/mock edits, allowedActions-only gating, confirm steps before mutations, and success only after the server responds. Y is the most complete: graceful degradation when /api/me fails, action-first ordering on mobile, the best tablet/phone recomposition, and receipts citing the server audit ID. It costs 8 lint warnings and a monolithic ActionPanel. X matches Y on state coverage and accessibility and has the richest bilingual/date handling, but the action panel ends up at the bottom on mobile and evidence rows are cramped at 375px. Z has the most distinctive government idiom (GOV.UK focus, breadcrumb, printable audit), the cleanest code and the best pre-decision evidence warning. It is let down by plain loading text, 12 small touch targets, KPI-like SLA tiles and duplicated evidence presentations."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Y",
+ "scorer_rationale": {
+  "task_hierarchy": "The queue sorts by urgency and has SLA chips including 'Completed'; supervisors get an 'Awaiting my approval' shortcut. On the detail page the action panel is first in the DOM (top on mobile, aside on desktop) and evidence is the first main section. Application, applicant and history sit below, with audit as a tab.",
+  "domain_adaptation": "Case-management IA: the case header holds state/SLA/assignee/fee plus Overview/Audit tabs. The evidence list has a missing-required-documents check. Bilingual rendering shows the official Thai with the English alongside for officers to cross-check. The info-request template uses the applicant's correspondence language.",
+  "contract_preservation": "No src/api or src/mock diff, routes are identical, test selectors are kept and the original tests are unchanged. The UI is gated on allowedActions (ActionPanel canRequest/canDecide/canReview), every mutation sends version, and server responses are applied via setData. Dev params are carried via links rather than by touching the mock.",
+  "interaction_state": "useLoad keeps previous rows dimmed while refetching and hides counts, so it never shows 'no cases' on failure. The list error shows the error code with retry even when /api/me fails (primary-scenario-error.png). There is a reload-failure notice, stale/registry-unavailable notices with reload, confirm steps for all mutations including approve, and a receipt with the audit entry ID and time.",
+  "responsive": "No overflow at any width. 'More filters' collapses on phones, 768 uses two-column labelled cards (primary-768.png), and the activity column folds into the assignee cell at 1024-1280. On the detail page at 375 the actions come first and evidence badges wrap under the names. The tab strip is slightly clipped at 375.",
+  "accessibility": "axe clean; 29/29 focus-visible stops; skip link; focus moves to the page h1 on navigation; ErrorSummary with links that move focus; the return-comment field gets focus; Notices with role alert/status and focusOnMount; lang marking only where the language differs; forced-colors and reduced-motion rules.",
+  "visual_consistency": "Light, calm enterprise styling with consistent badges (icon+text) and restrained colour. Some badge/pill density, but no decorative cards.",
+  "maintainability": "Reasonable ui/ and pages/case split with a generic useLoad hook and a Field render-prop. ActionPanel.tsx is a 660-line file holding three forms, and lint reports 8 fast-refresh warnings.",
+  "ai_governance": "Governed actions show approval-required vs final per option, confirm buttons that name the action, an explicit supervisor approve confirm and a required return comment, and a post-action receipt citing the server audit entry ID. No-action reasons explain server-side gating."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "urgency-sorted queue + case header with tabs (overview/audit) and an action-first side panel",
+  "justified_patterns": [
+   "action panel ordered first on mobile",
+   "supervisor 'awaiting my approval' shortcut",
+   "missing-required-document summary",
+   "bilingual side-by-side values for officer cross-checking",
+   "audit receipt with entry ID"
+  ],
+  "suspicious_patterns": [
+   "SLA count chips (functional filters, not decorative)"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Graceful degradation when /api/me fails (queue still usable)",
+  "Receipt shows the server audit ID",
+  "Best responsive recomposition (collapsible filters, 2-col cards at tablet)",
+  "Focus management on navigation and step changes"
+ ],
+ "defects": [
+  "8 lint warnings; large ActionPanel file",
+  "Dates formatted without an explicit Asia/Bangkok timezone",
+  "Missing space between assignee name and 'You' tag in text ('ณัฐพล วงศ์ประเสริฐคุณ')",
+  "Case tab strip slightly clipped at 375"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 4.137737600000001,
+  "num_turns": 57,
+  "wall_seconds": 912
+ },
+ "score_py": {
+  "score": 97.0,
+  "verdict": "PASS"
+ }
+}

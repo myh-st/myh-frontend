@@ -1,0 +1,120 @@
+{
+ "case": "devops-control-plane",
+ "variant": "myh-v2",
+ "skill_version": "v2 (this PR)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds converge on the same sound incident-workspace IA: context, then telemetry tabs, then AI investigation, then remediation cards, with an owners/timeline aside. All preserve the backend contract and selectors, make only GET calls on load, gate by server allowedActions, and split approve and execute into confirmed dialogs with receipts and rollback, so none triggers a critical failure. X is the most accessibility-clean (0 axe issues, skip link, roving tabs) and has the most robust polling and failure handling. Its remediation section is buried at the bottom and its overview list is not triaged. Y adds a section jump-nav, per-remediation steppers, keyboard-readable charts with a table alternative and severity triage, at the cost of one serious axe issue. Z has the strongest AI-evidence governance (citation verification) and the strictest confirmation ladder, but trails on accessibility (no skip link, contrast violations, non-roving tabs) and swallows poll errors silently. The differences are small, with X and Y roughly tied at the top and Z slightly behind on accessibility and state handling."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Incident page is a clear stack of header/access chip, context and ownership, telemetry tabs, investigation, then remediation, with the timeline in a sticky aside. The remediation decision surface sits at the bottom of a long scroll (detail-1440.png), so the primary action is findable but not elevated.",
+  "domain_adaptation": "The IA follows incident, evidence and remediation. Evidence citations jump into the telemetry tab and highlight the cited log, trace or metric (IncidentPage.tsx cite()). Log lines link to traces and traces to related logs. The /incidents overview adds a KPI row and a 'Needs attention' list of owners, but leaves incidents in server newest-first order (a SEV4 sits at the top of primary-1440.png).",
+  "contract_preservation": "No src/api or src/mock changes. Routes, incident-row, status-filter and service-row are kept. Logs use the server service/level filters. All mutations send version, and execution sends approvalId. The original 8 tests are unchanged and 11 new tests were added.",
+  "interaction_state": "Covers skeletons, empty-vs-error distinction (tested), partial-metrics notice, observer read-only chip, STALE_VERSION/INVALID_STATE notices that reload state and say 'Nothing was run', and poll-failure retry with a max-failure stop. It also shows failed-execution recovery with rollback and 'Showing last loaded state' when a refresh fails.",
+  "responsive": "No overflow at any width. At 900px or less, tables become labelled stacked cards, filters go full-width at 640px or less with 44px controls, and dialogs become bottom sheets. The 375 detail page is very long (about 4500px) and has no section nav.",
+  "accessibility": "Axe reports 0 violations on both pages. The page has a skip link and 29 of 29 keyboard stops focus-visible, with a box-shadow ring rather than an outline. Tabs use roving tabindex with arrow, Home and End keys. Dialogs trap focus, autofocus Cancel and restore focus. There are aria-live regions and sr-only captions, and reduced motion is handled.",
+  "visual_consistency": "A calm, enterprise palette with consistent badge tones and icons plus text for every state. The incident page uses restrained panels, although the overview's four KPI tiles are somewhat generic.",
+  "maintainability": "Small shared primitives (ui.tsx, Icon, useResource/usePolling with stale-key guarding) and per-section files. The CSS is large (about 1,900 lines) but tokenized.",
+  "ai_governance": "The investigation needs an explicit scope fieldset and a 'Start billable investigation' confirm. It is disclosed as read-only and billable, and shows estimated and actual cost and model. Approve and execute are separate dialogs ('step 1 of 2' and 'step 2 of 2') showing operation, target, risk and reversibility. Execute needs an acknowledgement checkbox, plus typing the remediation ID for high-risk or irreversible changes. The receipt shows before/after changes and the audit ref, and rollback has its own confirmation."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "incident workspace: stacked context → telemetry tabs → AI investigation → remediation cards, timeline aside; overview = health KPIs + attention list + incident table",
+  "justified_patterns": [
+   "telemetry tabs with citation drill-down highlight",
+   "two-step approve/execute dialogs with operation summary",
+   "execution step tracker + server receipt table",
+   "needs-attention owner list on overview",
+   "stacked-card tables on mobile"
+  ],
+  "suspicious_patterns": [
+   "generic 4-tile KPI row on overview",
+   "incident list not triaged by severity (server order)"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "evidence→telemetry highlighting",
+  "poll failure handling with stop-after-N and retry",
+  "irreversible/high-risk typed confirmation",
+  "observer/responder/commander gating purely from allowedActions",
+  "zero axe violations"
+ ],
+ "defects": [
+  "remediation (primary decision) buried at bottom of long page",
+  "no section jump-nav on long mobile detail",
+  "focus ring relies on 35%-alpha box-shadow (low visibility in focus screenshot)"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 4.0246097999999995,
+  "num_turns": 51,
+  "wall_seconds": 952
+ },
+ "score_py": {
+  "score": 87.0,
+  "verdict": "PASS"
+ }
+}

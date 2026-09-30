@@ -1,0 +1,117 @@
+{
+ "case": "retail-analytics",
+ "variant": "control",
+ "skill_version": null,
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 3,
+  "accessibility": 3,
+  "visual_consistency": 3,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds keep the Reporting API contract (no src/api or src/mock edits, GET-only page loads, original selectors preserved; region-row is generated dynamically in X and Z). All converge on a similar analytics-first IA: interactive KPI switch tiles, a hand-built SVG trend with prior-period overlay and anomaly markers, and a drillable region/store/category comparison with trend-bucket drill-down. X is the most complete: explicit no-sales empty state, inline viewer lock on Export, a confirmation dialog with receipt, and an anomaly 'Investigate' that scopes filters, metric and period. On mobile it caps the anomaly list so the trend stays primary; its main flaws are a detail-page contrast issue and a clipped column at 768. Z is close behind, with better heading semantics and focus treatment, but shows misleading $0/0.0% tiles in the empty scenario, reveals the viewer restriction only after the panel opens, and runs long on mobile. Y has the richest drill panel and proactive stale-data detection, but trails on presentation: no h1, an awkward 768 filter layout, a horizontally scrolling mobile table, unicode-glyph icons and zero-valued empty tiles."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Y",
+ "scorer_rationale": {
+  "task_hierarchy": "The trend is primary with an anomaly rail, and selecting a point opens a DrillPanel of per-store and per-category drivers plus 'Set as date range'. The comparison sits below with a metric sort switch.",
+  "domain_adaptation": "Strong analyst semantics: presets anchored to the last loaded day, fleet-wide tagging of category and segment anomalies, and missing-POS stores listed as explicit rows in store breakdowns. Out-of-scope shared-link filters are sanitized with a visible notice.",
+  "contract_preservation": "src/api and src/mock are untouched and loads are GET-only. region-row, metric-box, anomaly-item and from-date are explicit, and the README documents URL params. data-testid=export-button now names the in-panel 'Start export' rather than the header trigger.",
+  "interaction_state": "Covers loading text, error with retry, the viewer notice in the export panel, and partial data with an export failure warning. It proactively detects dataVersion mismatch ('Newer data is available'), handles STALE_VERSION reload and hides expired download links. The empty scenario shows '$0 / 0.0%' tiles instead of an explicit no-sales state, and loading is a bare 'Loading workspace…'.",
+  "responsive": "No page overflow. At 375 the comparison is a horizontally scrolling table showing only name + revenue, and all 8 anomalies render before the comparison. At 768 the filter bar crams region, store, category and segment into a narrow stacked right column with empty space to its left.",
+  "accessibility": "Has a skip link, solid focus-visible outlines, a chart keyboard nav and table, and axe is clean. Pages have no h1 (titles are h2), comparison tabs use role=tablist/tab without tabpanel or arrow-key semantics, and 22 small touch targets were reported.",
+  "visual_consistency": "Generally calm, but uses unicode glyphs (⤓, ▲, ⚑, ✕, ℹ) instead of an icon system. The 768 filter layout looks unbalanced and the header Export is a plain secondary button.",
+  "maintainability": "Compact (3.6k LOC) with useAsync race guard, view.ts URL state, and unit tests for view helpers plus 33 tests overall. StorePage imports MetricSwitch from OverviewPage (page-to-page coupling).",
+  "ai_governance": "The inline export panel shows dates, filters and contents before 'Start export', polls to ready, and shows rowCount, server-scoped regions, data version and link expiry. There is no separate confirmation step, but the panel itself serves as a review surface."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "KPI switch + trend with anomaly rail + inline trend-bucket drill panel + comparison table",
+  "justified_patterns": [
+   "trend-point DrillPanel with store/category drivers",
+   "prior-period overlay",
+   "fleet-wide anomaly labelling",
+   "breadcrumb from store to region comparison",
+   "URL-encoded shareable view"
+  ],
+  "suspicious_patterns": [
+   "four-KPI tile row (interactive, so mitigated)",
+   "unicode glyphs used as icons"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": false,
+  "recovery": true
+ },
+ "strengths": [
+  "Proactive stale-data detection before export",
+  "Missing stores rendered as explicit rows rather than silently absent",
+  "Sanitizes out-of-scope shared-link filters with a notice",
+  "Download-link expiry handled",
+  "Most tests (33) including view-helper unit tests"
+ ],
+ "defects": [
+  "No h1 on overview or store pages",
+  "Empty scenario shows $0/0.0% tiles",
+  "Awkward 768 filter layout",
+  "Mobile comparison table scrolls horizontally with 2 visible columns",
+  "tablist role without full tab semantics",
+  "22 small touch targets"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 4.719187799999999,
+  "num_turns": 68,
+  "wall_seconds": 1072
+ },
+ "score_py": {
+  "score": 77.0,
+  "verdict": "REVIEW"
+ }
+}

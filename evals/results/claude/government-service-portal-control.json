@@ -1,0 +1,210 @@
+{
+ "case": "government-service-portal",
+ "variant": "control",
+ "agent": "Claude Code 2.1.285 headless (claude -p), model claude-opus-5-5, effort=high (inherited CLAUDE_EFFORT)",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright: 375/768/1024/1440 overflow on primary+detail(+extra) routes",
+   "playwright: 30-step Tab walk at 1440 and 375 (primary, detail)",
+   "playwright: prefers-reduced-motion=reduce animation check",
+   "axe-core WCAG 2 A/AA scan",
+   "playwright: mock scenarios slow/empty/error/forbidden/partial on primary+detail",
+   "network: requests issued on page load"
+  ],
+  "screenshots": [
+   "screenshots/government-service-portal/control-primary-375.jpg",
+   "screenshots/government-service-portal/control-primary-768.jpg",
+   "screenshots/government-service-portal/control-primary-1024.jpg",
+   "screenshots/government-service-portal/control-primary-1440.jpg"
+  ],
+  "notes": "Both builds are solid, contract-preserving redesigns with no critical failures. Both gate actions on server allowedActions, send version on every mutation, keep drafts on STALE_VERSION, and put a review/confirm step before governed decisions. X has more robust responsive composition for the stated hardware (tables become labelled cards, no destructive compression at 1024 or 375), and its evidence-risk warning at decision review is strong. Y has the better desktop decision surface (a sticky next-action rail), richer state treatment (skeletons, a list stale banner, a receipt tied to the server audit entry) and zero small targets. However, its queue SLA column collapses into near word-per-line wrapping at 1024px and its evidence rows compress badly at 375px. Overall they are close; X edges ahead on responsive robustness for older office displays and tablets."
+ },
+ "phase": "baseline",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Queue opens with filters, clickable SLA tiles and an urgency-sorted table (overdue first, red/amber left rules). Detail puts the overview (state/SLA/assignee/fee) and a full-width Actions panel above the evidence, with in-page links to the subordinate sections. The audit trail is on its own route.",
+  "domain_adaptation": "Case-file IA with a required-documents checklist (missing/rejected/unchecked), statutory SLA days, Buddhist-era dates, 'My queue' and supervisor 'Awaiting approval' nav views, bilingual message/reason pairs and a standard-wording template. The GOV-style restraint suits a public-sector console.",
+  "contract_preservation": "contract_files_changed=[], routes unchanged, case-row/assignee-filter preserved, the original 9 tests still pass. Every mutation sends version and replaces state with the server response (useCase setCase). main.tsx only seeds the mock's own localStorage keys in DEV.",
+  "interaction_state": "Handles loading (plain 'กำลังโหลด…' text), empty with clear-filters, error+retry, NOT_FOUND, a stale row tag and detail notice, unavailableSources warning, read-only/not-assigned/pending/finished explanations, two-step review before send, and STALE_VERSION/INVALID_STATE reload that keeps the draft. The success notice appears only after the server returns. There is no skeleton, and the receipt is a sentence with no server audit reference.",
+  "responsive": "No overflow at any width. Tables become labelled cards below 820px, overview/bilingual grids collapse, SLA tiles stack at 560px and the header recomposes. At 1024 the queue table stays legible. State badges wrap onto two lines at 1440 and 1024.",
+  "accessibility": "axe clean, 29/29 focus-visible stops with 0 unnamed (links use a yellow-fill focus rather than an outline), skip link, error summaries that link to fields, focus moved to form headings and success notices, aria-pressed tiles/lang switch, forced-colors and print styles, icon+text for status. verify reports 12 small targets on the queue.",
+  "visual_consistency": "Calm, high-contrast, GOV.UK-like system with square borders, a consistent badge vocabulary and a restrained palette. The large bordered SLA tiles are a little heavy, and there is some badge wrapping.",
+  "maintainability": "Clear split: pages / features (InfoRequestForm, DecisionForm, SupervisorReview) / components / lib (sla, evidence, errors) / typed strings table checked with satisfies. Reuses api/client types, and 9 meaningful new workflow tests were added.",
+  "ai_governance": "No AI. Governed decisions: each option labels final vs needs-supervisor-approval, a review step warns about unverified or missing evidence before granting, final decisions get a red confirm button with a 'cannot be undone' warning, and supervisor approve needs an explicit confirm step while return needs a comment. Buttons are gated by server allowedActions only."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "urgency-sorted case queue + single-column case file with top action panel and inline multi-step workflows",
+  "justified_patterns": [
+   "SLA summary tiles doubling as filters",
+   "required-documents checklist vs submitted evidence",
+   "bilingual paired textareas with standard-wording template",
+   "review/confirm step before every mutation",
+   "URL-persisted filters and My queue / Awaiting approval views",
+   "table-to-labelled-card recomposition"
+  ],
+  "suspicious_patterns": [
+   "SLA count tiles read slightly like a generic KPI row, though they are functional filters"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Evidence risk warning at decision review (unverified/missing documents)",
+  "Draft preserved on STALE_VERSION with reload",
+  "Explains why actions are unavailable without deciding authorization client-side",
+  "Strong responsive recomposition with no destructive compression",
+  "High-contrast, forced-colors and print support for older office displays"
+ ],
+ "defects": [
+  "Loading state is bare text with no skeleton",
+  "12 small touch targets on the queue per verify",
+  "State badges wrap awkwardly in the table",
+  "Success message has no server audit reference"
+ ],
+ "objective_checks": {
+  "checks": {
+   "lint": "pass",
+   "typecheck": "pass",
+   "test": "pass",
+   "build": "pass"
+  },
+  "diffstat": " 28 files changed, 3747 insertions(+), 149 deletions(-)",
+  "backend_contract_files_changed": [],
+  "existing_tests_modified": [],
+  "original_test_selectors_present": {
+   "assignee-filter": true,
+   "case-row": true
+  },
+  "test_cases_total": 18,
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "keyboard_tab_walk": {
+   "primary@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "primary@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@1440": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   },
+   "detail@375": {
+    "stops": 29,
+    "focus_visible": 29,
+    "unnamed": 0
+   }
+  },
+  "reduced_motion": {
+   "primary": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   },
+   "detail": {
+    "runningAnimationsUnderReduce": 0,
+    "reducedMotionMediaRules": 1
+   }
+  },
+  "axe_wcag_a_aa_violations": {
+   "primary": [],
+   "detail": []
+  },
+  "non_get_requests_on_page_load": [],
+  "scenario_live_regions": {
+   "primary:slow": 1,
+   "primary:empty": 1,
+   "primary:error": 1,
+   "primary:forbidden": 1,
+   "primary:partial": 1,
+   "detail:slow": 1,
+   "detail:empty": 0,
+   "detail:error": 1,
+   "detail:forbidden": 0,
+   "detail:partial": 0
+  },
+  "source_signals": {
+   "prefers_reduced_motion": 1,
+   "focus_visible": 6,
+   "aria_live": 0,
+   "role_status_alert": 7,
+   "dialog": 0,
+   "transition_all": 0,
+   "emoji_ui": 0,
+   "media_queries": 6,
+   "lang_th": 14,
+   "aria_sort_or_caption": 2,
+   "mutation_confirm": 0
+  },
+  "console_errors": []
+ },
+ "session": {
+  "model": "claude-opus-5-5",
+  "cost_usd": 4.620316800000001,
+  "num_turns": 56,
+  "wall_seconds": 971,
+  "timed_out": false,
+  "tool_counts": {
+   "Bash": 30,
+   "Read": 10,
+   "Write": 8
+  },
+  "skill_file_refs": []
+ },
+ "score_py": {
+  "score": 83.0,
+  "verdict": "REVIEW",
+  "stdout": "case: government-service-portal\nvariant: control\nscore: 83.00/100\nverdict: REVIEW"
+ }
+}

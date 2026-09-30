@@ -1,0 +1,113 @@
+{
+ "case": "hospital-operations",
+ "variant": "myh-v1",
+ "skill_version": "v1 (original)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 3,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds use the same domain-appropriate composition: a ward capacity strip that doubles as a filter, a grouped triage queue and an inspector. All have no contract changes, clean axe results, no overflow and GET-only loads, and none has a critical failure. Y is the most complete on governed actions and state truthfulness: two-step impact previews, timestamped server-confirmed receipts, typed failure messages, a staleness banner and careful focus management. Its weak spot is that the ward cards stack vertically on mobile and push the queue down. Z nearly matches Y on action governance and handles mobile better (2x2 tiles), but it exposes MRNs in every queue row and groups by status only, so an overdue escalated alert sinks to the bottom. X has the best triage grouping (overdue first regardless of status) and a good mobile ward carousel. Its acknowledge action is a single click with no impact preview, and its success receipt has no timestamp. Overall Y ranks slightly ahead of X and Z, which are close to each other."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Z",
+ "scorer_rationale": {
+  "task_hierarchy": "The queue dominates, with a 'past due / without owner' summary and a 'Needs attention only' toggle. Grouping is by status only (Needs action = open), so the overdue escalated AL-2031 sinks to the bottom of 'In progress' (primary-1440.png).",
+  "domain_adaptation": "The capacity strip ('No beds free', 'Short N beds', 'N free') and handoff history fit the domain. But every queue row shows the MRN (AlertQueue.tsx: `{a.patientRef && <span className=\"mono\">{a.patientRef}</span>}`), which goes against the expectation to expose patient-sensitive detail only where needed.",
+  "contract_preservation": "No contract files changed. The route becomes /alerts/* but both paths still resolve, and test IDs, server filters and the original test are kept.",
+  "interaction_state": "Has skeletons, filtered vs unfiltered empty states, errors with Retry, 404, 'could not refresh — showing the last loaded list', and 409 'Load latest version' that keeps the draft. 403 and network errors say nothing was changed, and the receipt is server-confirmed with time and new owner.",
+  "responsive": "No overflow. At 375 the ward tiles form a compact 2x2 grid, so the queue stays reachable. Below 960 the detail is full screen with 'Back to queue' and focus returns to the row. verify reports 1 small target.",
+  "accessibility": "axe is clean, 29/29 focus-visible stops, urgency uses a distinct icon shape plus text, and Escape cancels forms. The heading is focused on every detail load, including split view, which takes focus away from the queue on desktop.",
+  "visual_consistency": "Coherent and calm. Rows are full cards with coloured edges, a little heavier than Y.",
+  "maintainability": "Console, detail, queue and capacity are separated, and format.ts has unit tests. AlertDetailPanel.tsx is a 440-line file holding several forms.",
+  "ai_governance": "Inline confirmation forms state the impact ('Ownership transfers to X'), escalate requires a target and a reason, and the receipt reads 'confirmed by the server at HH:MM' and is dismissible."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "capacity strip + triage queue + inspector (master-detail)",
+  "justified_patterns": [
+   "impact statement in action forms",
+   "'Needs attention only' filter",
+   "ward tiles as a filter",
+   "focus returns to the originating row on mobile"
+  ],
+  "suspicious_patterns": [
+   "MRNs shown in every queue row without a task need",
+   "ward tiles resemble a KPI row (justified by pressure labels)"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": false,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "governed action flow with impact and receipt",
+  "compact 2x2 capacity grid on mobile",
+  "unit tests for triage and pressure logic",
+  "the refresh spinner is disabled under reduced motion"
+ ],
+ "defects": [
+  "patient MRNs exposed in queue rows",
+  "an overdue escalated alert is grouped as 'In progress' at the bottom",
+  "the heading is focused on every detail load in split view",
+  "1 small touch target"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 2.7381560000000005,
+  "num_turns": 52,
+  "wall_seconds": 649
+ },
+ "score_py": {
+  "score": 83.0,
+  "verdict": "REVIEW"
+ }
+}

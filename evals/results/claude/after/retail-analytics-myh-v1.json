@@ -1,0 +1,122 @@
+{
+ "case": "retail-analytics",
+ "variant": "myh-v1",
+ "skill_version": "v1 (original)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 4,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds keep the Reporting API contract (no src/api or src/mock edits, GET-only page loads, original selectors preserved; region-row is generated dynamically in X and Z). All converge on a similar analytics-first IA: interactive KPI switch tiles, a hand-built SVG trend with prior-period overlay and anomaly markers, and a drillable region/store/category comparison with trend-bucket drill-down. X is the most complete: explicit no-sales empty state, inline viewer lock on Export, a confirmation dialog with receipt, and an anomaly 'Investigate' that scopes filters, metric and period. On mobile it caps the anomaly list so the trend stays primary; its main flaws are a detail-page contrast issue and a clipped column at 768. Z is close behind, with better heading semantics and focus treatment, but shows misleading $0/0.0% tiles in the empty scenario, reveals the viewer restriction only after the panel opens, and runs long on mobile. Y has the richest drill panel and proactive stale-data detection, but trails on presentation: no h1, an awkward 768 filter layout, a horizontally scrolling mobile table, unicode-glyph icons and zero-valued empty tiles."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "KPI tiles double as the chart-metric switch, the trend sits beside an anomaly rail, and the comparison table is below (OverviewPage.tsx workspace grid). Clicking a trend bucket re-scopes the breakdown to that period ('Drilled into … Show full range'), so the decision flow is clear.",
+  "domain_adaptation": "The analytics-first flow runs trend, then anomaly 'Investigate', then region, stores and store detail, with a categories table there. It adds retail-specific caveats: a new-store prior-period skew notice (comparisonCaveat), store status badges, and returns treated as lower-is-better.",
+  "contract_preservation": "src/api and src/mock are untouched and all loads are GETs. region-row is kept through data-testid={`${dimension}-row`} (the default dim is region; the grep miss is a false negative), and metric-box, anomaly-item and from-date remain. main.tsx adds a dev-only ?mockRole switch that calls the existing setMockSession, which is harmless but an unrequested entry-point change.",
+  "interaction_state": "Covers skeleton loading, empty 'No sales' tiles instead of fake zeros, and a full error with retry. The viewer sees a locked Export with the reason inline (aria-disabled + describedby), partial data gets a banner and an export 'likely blocked' warning, and STALE_VERSION offers Reload data. Invalid ranges are refused client-side while the last valid view stays, and the receipt shows server filtersApplied and link expiry.",
+  "responsive": "No overflow at any width. At 375 the filters collapse behind a toggle, KPIs go 2x2, anomalies are capped at 3 with 'Show all 8', and the comparison becomes stacked cards. At 768 the last table column ('Revenue vs prior') is clipped inside the horizontal scroll container.",
+  "accessibility": "Has a skip link, focus-visible outlines (28/30 stops), a keyboard-navigable chart with an aria-live readout and table toggle, and a focus-trapped dialog that restores focus. Reduced-motion and forced-colors are handled and axe is clean on primary. Detail has 2 serious color-contrast nodes.",
+  "visual_consistency": "Calm, coherent enterprise styling with one icon family and restrained semantic color. The anomaly rail is somewhat card-heavy but justified.",
+  "maintainability": "Components are well factored (useQuery with stale-response guard, useExport, view.ts URL state, metrics.ts semantics). At 4.8k LOC it is the largest build, with a very large CSS file.",
+  "ai_governance": "No AI is involved. The governed export uses an explicit confirmation dialog listing the exact scope, snapshot version and format, with an optional selected-period-only choice. It polls the job to a server-confirmed receipt and never shows success before status=ready."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "KPI switch + trend with anomaly side rail + drillable comparison table (trend-bucket drill scopes breakdown)",
+  "justified_patterns": [
+   "KPI tiles as chart metric selector",
+   "prior-period overlay with anomaly markers",
+   "anomaly 'Investigate' that applies scope + metric + date",
+   "region→store→store detail drill path",
+   "export confirmation dialog with receipt",
+   "mobile card-table recomposition"
+  ],
+  "suspicious_patterns": [
+   "four-KPI tile row (mitigated: tiles are interactive metric switches)",
+   "avatar/initials header chrome"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Most complete state handling, with no misleading zeros in the empty scenario",
+  "Anomaly Investigate performs a real drill (filters, metric and focus bucket)",
+  "Viewer export restriction shown inline before any interaction",
+  "Prior-period comparability caveat for a newly opened store",
+  "Anomaly list collapsed on small screens so the trend stays primary"
+ ],
+ "defects": [
+  "Detail page has 2 serious color-contrast violations (axe)",
+  "Rightmost comparison column clipped at 768 inside the scroll container",
+  "Dev-only mockRole query switch added to main.tsx",
+  "Largest code and CSS footprint"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "nodes": 2
+    }
+   ]
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 5.636704999999998,
+  "num_turns": 1,
+  "wall_seconds": 1173
+ },
+ "score_py": {
+  "score": 84.0,
+  "verdict": "REVIEW"
+ }
+}

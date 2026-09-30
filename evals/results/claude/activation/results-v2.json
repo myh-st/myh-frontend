@@ -1,0 +1,263 @@
+[
+ {
+  "tag": "claude-claude-opus-5-5-t1-frontend-dashboard",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "frontend-dashboard",
+  "expected": true,
+  "skill_listed": true,
+  "skill_tool_invoked": true,
+  "skill_file_read_manually": true,
+  "activated": true,
+  "tool_sequence": [
+   "Skill:myh-frontend",
+   "Bash",
+   "Read",
+   "Read",
+   "Bash",
+   "Bash",
+   "Write",
+   "Write"
+  ],
+  "cost_usd": 0.4489314,
+  "log": "claude-claude-opus-5-5-t1-frontend-dashboard.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-login-portal",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "login-portal",
+  "expected": true,
+  "skill_listed": true,
+  "skill_tool_invoked": true,
+  "skill_file_read_manually": true,
+  "activated": true,
+  "tool_sequence": [
+   "Skill:myh-frontend",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Write",
+   "Write",
+   "Bash"
+  ],
+  "cost_usd": 0.3491158,
+  "log": "claude-claude-opus-5-5-t1-login-portal.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-agent-workspace",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "agent-workspace",
+  "expected": true,
+  "skill_listed": true,
+  "skill_tool_invoked": true,
+  "skill_file_read_manually": true,
+  "activated": true,
+  "tool_sequence": [
+   "Skill:myh-frontend",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash"
+  ],
+  "cost_usd": 0.2631148,
+  "log": "claude-claude-opus-5-5-t1-agent-workspace.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-connector-settings",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "connector-settings",
+  "expected": true,
+  "skill_listed": true,
+  "skill_tool_invoked": true,
+  "skill_file_read_manually": true,
+  "activated": true,
+  "tool_sequence": [
+   "Skill:myh-frontend",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Write",
+   "Write",
+   "Write",
+   "Edit",
+   "Bash"
+  ],
+  "cost_usd": 0.506312,
+  "log": "claude-claude-opus-5-5-t1-connector-settings.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-workflow-builder",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "workflow-builder",
+  "expected": true,
+  "skill_listed": true,
+  "skill_tool_invoked": true,
+  "skill_file_read_manually": true,
+  "activated": true,
+  "tool_sequence": [
+   "Skill:myh-frontend",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Write"
+  ],
+  "cost_usd": 0.33472960000000007,
+  "log": "claude-claude-opus-5-5-t1-workflow-builder.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-data-review",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "data-review",
+  "expected": true,
+  "skill_listed": true,
+  "skill_tool_invoked": true,
+  "skill_file_read_manually": true,
+  "activated": true,
+  "tool_sequence": [
+   "Skill:myh-frontend",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Write",
+   "Write",
+   "Edit"
+  ],
+  "cost_usd": 0.5404907999999999,
+  "log": "claude-claude-opus-5-5-t1-data-review.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-postgres-only",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "postgres-only",
+  "expected": false,
+  "skill_listed": true,
+  "skill_tool_invoked": false,
+  "skill_file_read_manually": false,
+  "activated": false,
+  "tool_sequence": [
+   "Bash",
+   "Bash"
+  ],
+  "cost_usd": 0.1504556,
+  "log": "claude-claude-opus-5-5-t1-postgres-only.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-terraform-only",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "terraform-only",
+  "expected": false,
+  "skill_listed": true,
+  "skill_tool_invoked": false,
+  "skill_file_read_manually": false,
+  "activated": false,
+  "tool_sequence": [
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash"
+  ],
+  "cost_usd": 0.3039528,
+  "log": "claude-claude-opus-5-5-t1-terraform-only.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-api-bug",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "api-bug",
+  "expected": false,
+  "skill_listed": true,
+  "skill_tool_invoked": false,
+  "skill_file_read_manually": false,
+  "activated": false,
+  "tool_sequence": [
+   "Bash",
+   "Bash",
+   "Bash"
+  ],
+  "cost_usd": 0.1294074,
+  "log": "claude-claude-opus-5-5-t1-api-bug.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-kubernetes-debug",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "kubernetes-debug",
+  "expected": false,
+  "skill_listed": true,
+  "skill_tool_invoked": false,
+  "skill_file_read_manually": false,
+  "activated": false,
+  "tool_sequence": [
+   "Bash",
+   "Bash"
+  ],
+  "cost_usd": 0.1324068,
+  "log": "claude-claude-opus-5-5-t1-kubernetes-debug.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-iam-policy",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "iam-policy",
+  "expected": false,
+  "skill_listed": true,
+  "skill_tool_invoked": false,
+  "skill_file_read_manually": false,
+  "activated": false,
+  "tool_sequence": [
+   "Bash",
+   "Bash",
+   "Bash"
+  ],
+  "cost_usd": 0.1532118,
+  "log": "claude-claude-opus-5-5-t1-iam-policy.jsonl"
+ },
+ {
+  "tag": "claude-claude-opus-5-5-t1-data-pipeline",
+  "layout": "claude",
+  "model": "claude-opus-5-5",
+  "trial": 1,
+  "case": "data-pipeline",
+  "expected": false,
+  "skill_listed": true,
+  "skill_tool_invoked": false,
+  "skill_file_read_manually": false,
+  "activated": false,
+  "tool_sequence": [
+   "Bash",
+   "Bash",
+   "Bash",
+   "Bash",
+   "Write",
+   "Bash"
+  ],
+  "cost_usd": 0.2008576,
+  "log": "claude-claude-opus-5-5-t1-data-pipeline.jsonl"
+ }
+]

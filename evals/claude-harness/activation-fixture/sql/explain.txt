@@ -1,0 +1,6 @@
+Limit  (cost=982344.12..982344.25 rows=50) (actual time=8123.4..8123.5 rows=50 loops=1)
+  ->  Sort  (cost=982344.12..984844.12 rows=1000000)
+        ->  HashAggregate
+              ->  Hash Join  (hash cond: o.customer_id = c.id)
+                    ->  Seq Scan on orders o  (filter: date_trunc('day', created_at) >= ...) rows removed by filter: 18234001
+                    ->  Hash -> Seq Scan on customers c

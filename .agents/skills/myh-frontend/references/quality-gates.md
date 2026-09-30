@@ -6,6 +6,7 @@ Use this as the final implementation checklist. Adapt commands to the repository
 
 - Requested flow works end-to-end with existing backend contracts.
 - Primary action has success, failure, loading, and disabled/ineligible states.
+- Loading, empty, and failed states are visually and textually distinct; no zero counts or empty-state copy render before data settles.
 - Async updates cannot apply stale responses over newer state.
 - Polling/streams stop when hidden, detached, superseded, or terminal when applicable.
 - Destructive/mutating actions require the intended confirmation/approval path.
@@ -18,6 +19,7 @@ Use this as the final implementation checklist. Adapt commands to the repository
 - Async status changes use appropriate status/alert semantics where needed.
 - Semantic labels exist for forms and icon-only controls.
 - State is never communicated by color alone.
+- Every scrollable region (overflowing table wrapper, timeline, log pane, inspector) can be reached and scrolled by keyboard — `tabindex="0"` with an accessible name or a focusable child — or the overflow is removed.
 - `prefers-reduced-motion` disables non-essential movement.
 - Contrast meets WCAG AA for normal text and essential controls.
 
@@ -26,6 +28,7 @@ Use this as the final implementation checklist. Adapt commands to the repository
 Verify 375, 768, 1024, and 1440 px:
 
 - no horizontal page overflow;
+- no content squeeze: columns stay readable (no one-word-per-line wrapping) and actions are not clipped;
 - fixed/sticky navigation does not hide content;
 - dialogs fit the viewport;
 - touch controls remain usable;
