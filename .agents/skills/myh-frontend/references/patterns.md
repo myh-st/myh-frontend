@@ -92,3 +92,35 @@ For tables, extracted fields, QA review, or document comparison:
 - keep edit/review state explicit;
 - use inline validation without shifting large portions of the page;
 - allow a stacked card/list representation on small screens rather than forcing a desktop table to overflow.
+
+
+## Connector / integration hub
+
+Use a catalog or list structure when users are discovering and managing integrations.
+
+Show, where relevant:
+
+- connection state with text/icon cues, not color alone;
+- authenticated account/workspace identity without exposing secrets;
+- granted scopes and data direction;
+- last successful sync or connection test;
+- degraded, expired, and reconnect/reauthorize states;
+- explicit connect, test, reconnect, reauthorize, and disconnect/revoke actions.
+
+Keep secret values write-only. High-impact revoke/disconnect actions should name the affected connector, scope, and consequence before confirmation.
+
+## Control plane / incident response
+
+Use this for DevOps, reliability, security operations, or other incident-driven work.
+
+Prioritize:
+
+1. active incident/health state and ownership;
+2. the affected service/resource context;
+3. telemetry/evidence such as logs, metrics, traces, events, or audit records;
+4. hypothesis/investigation state;
+5. proposed remediation;
+6. approval/confirmation for mutating remediation;
+7. authoritative execution receipt, rollback, and recovery state.
+
+Do not make the dashboard KPI layer compete with the selected incident. AI-generated hypotheses remain evidence-backed suggestions; server state owns execution authority.

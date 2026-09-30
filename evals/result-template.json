@@ -1,0 +1,25 @@
+{
+  "case": "case-id",
+  "variant": "control-or-myh",
+  "agent": "agent-name-and-version",
+  "scores": {
+    "task_hierarchy": 0,
+    "domain_adaptation": 0,
+    "contract_preservation": 0,
+    "interaction_state": 0,
+    "responsive": 0,
+    "accessibility": 0,
+    "visual_consistency": 0,
+    "maintainability": 0,
+    "ai_governance": 0
+  },
+  "not_applicable": [],
+  "critical_failures": [],
+  "evidence": {
+    "skill_discovered": null,
+    "skill_invoked": null,
+    "tests_run": [],
+    "screenshots": [],
+    "notes": ""
+  }
+}

@@ -31,7 +31,7 @@ Connect your enterprise tools and data sources securely, so AI can access the ri
 
 
 
-> Click any preview to open the full-resolution vector image.
+> Preview images above are illustrative examples only; the skill is evaluated against cross-domain principles rather than screenshot similarity.
 
 ## What it optimizes for
 
@@ -67,6 +67,18 @@ Use $myh-frontend to review the current frontend and implement the highest-impac
 
 ```text
 Use $myh-frontend to build an enterprise AI approval flow with clear scope, risk, cost, and audit states.
+```
+
+## Evaluation
+
+The repository includes a cross-domain evaluation suite under [`evals/`](evals/) to test whether the skill generalizes beyond the preview UI.
+
+It covers hospital operations, banking risk, DevOps incident response, HR onboarding, retail analytics, enterprise AI agents, connector management, and government service casework. The benchmark scores task hierarchy, domain adaptation, contract preservation, state design, responsiveness, accessibility, visual consistency, maintainability, and AI governance where applicable.
+
+The suite deliberately uses **golden principles, not golden screenshots**. A strong result should fit its domain rather than copy the Sawasdee Hub layout.
+
+```bash
+python evals/score.py evals/results/<result>.json
 ```
 
 ## Public-safe derivation

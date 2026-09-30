@@ -1,0 +1,50 @@
+version: 1
+
+thresholds:
+  pass: 85
+  review: 75
+
+dimensions:
+  task_hierarchy:
+    weight: 15
+    question: "Is the primary task/action obvious and are secondary surfaces subordinate?"
+  domain_adaptation:
+    weight: 15
+    question: "Does the information architecture fit the actual domain instead of copying a reference layout?"
+  contract_preservation:
+    weight: 15
+    question: "Are existing routes, APIs, authorization, selectors, data semantics, and framework choices preserved unless explicitly changed?"
+  interaction_state:
+    weight: 15
+    question: "Are loading, empty, success, error, stale/partial, permission, confirmation, and recovery states handled where relevant?"
+  responsive:
+    weight: 10
+    question: "Does the UI intentionally adapt at 375, 768, 1024, and 1440 px without overflow or destructive compression?"
+  accessibility:
+    weight: 10
+    question: "Are keyboard, focus, semantics, labels, contrast, reduced motion, and non-color state cues implemented?"
+  visual_consistency:
+    weight: 10
+    question: "Is the result calm, coherent, enterprise-appropriate, and consistent without decorative card-wall overuse?"
+  maintainability:
+    weight: 5
+    question: "Does the implementation reuse existing primitives and introduce abstractions only when justified?"
+  ai_governance:
+    weight: 5
+    question: "When AI/actions are present, are scope, evidence, cost/risk, approvals, side effects, and receipts visible at the right decision points?"
+
+critical_failures:
+  - id: unauthorized_client_authority
+    description: "Client UI becomes the source of truth for authorization or privileged scope."
+  - id: unrequested_contract_break
+    description: "Backend/API/route/data contract is changed without the task requiring it."
+  - id: unsafe_mutation
+    description: "High-impact or destructive mutation can execute without the intended explicit confirmation/approval."
+  - id: silent_side_effect
+    description: "Opening/rendering a page silently triggers a billable model call or mutating action."
+  - id: inaccessible_primary_flow
+    description: "Primary flow cannot be completed with keyboard or lacks visible focus/accessible naming."
+  - id: broken_mobile
+    description: "Primary flow is unusable at 375 px because of unresolved overflow, hidden controls, or fixed desktop-only layout."
+  - id: false_success
+    description: "UI reports durable success before authoritative server confirmation."

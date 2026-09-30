@@ -26,7 +26,7 @@ Classify the screen before styling:
 - **Agent / chat** — concise conversation plus distinct execution/progress state; approvals and receipts are explicit.
 - **Auth / login** — strong brand recognition, compact form, calm background, minimal distractions.
 - **Builder / canvas** — workspace first; inspectors and controls support the canvas instead of competing with it.
-- **Approval / destructive** — exact operation, scope, impact, cost/risk, reversibility, and confirmation must be visible before action.
+- **Approval / destructive** — exact operation, scope, impact, cost/risk, reversibility, and confirmation must be visible before action.\n- **Integration / connector** — discovery, auth/scope, health, last sync/test, reconnect, and revoke/disconnect state must be explicit.\n- **Control plane / incident** — health and incident context first; telemetry and evidence support investigation; remediation is a governed action with confirmation and receipt.
 
 Read `references/patterns.md` when the task matches one of these surfaces.
 

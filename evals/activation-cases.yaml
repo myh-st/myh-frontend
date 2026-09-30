@@ -1,0 +1,29 @@
+version: 1
+
+positive:
+  - id: frontend-dashboard
+    prompt: "Review our operations dashboard and implement a clearer responsive information hierarchy."
+  - id: login-portal
+    prompt: "Redesign this enterprise login page and keep the existing authentication endpoints unchanged."
+  - id: agent-workspace
+    prompt: "Build the UI for an AI assistant that can investigate issues and request approval before taking action."
+  - id: connector-settings
+    prompt: "Improve the integrations page so users can understand connection health, scopes, and reconnect failures."
+  - id: workflow-builder
+    prompt: "Refactor our visual workflow editor for better usability and keyboard accessibility."
+  - id: data-review
+    prompt: "Improve a dense record-review screen used by operations staff to compare extracted fields and evidence."
+
+negative:
+  - id: postgres-only
+    prompt: "Optimize this PostgreSQL query and explain the execution plan."
+  - id: terraform-only
+    prompt: "Write Terraform for a private GKE cluster with Workload Identity."
+  - id: api-bug
+    prompt: "Fix this backend FastAPI validation bug without changing the frontend."
+  - id: kubernetes-debug
+    prompt: "Diagnose why this Kubernetes pod is CrashLoopBackOff."
+  - id: iam-policy
+    prompt: "Review this IAM policy for excessive permissions."
+  - id: data-pipeline
+    prompt: "Optimize this Spark job and reduce shuffle."
