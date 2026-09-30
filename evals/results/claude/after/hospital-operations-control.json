@@ -1,0 +1,112 @@
+{
+ "case": "hospital-operations",
+ "variant": "control",
+ "skill_version": null,
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 3
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": false,
+  "skill_invoked": false,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds use the same domain-appropriate composition: a ward capacity strip that doubles as a filter, a grouped triage queue and an inspector. All have no contract changes, clean axe results, no overflow and GET-only loads, and none has a critical failure. Y is the most complete on governed actions and state truthfulness: two-step impact previews, timestamped server-confirmed receipts, typed failure messages, a staleness banner and careful focus management. Its weak spot is that the ward cards stack vertically on mobile and push the queue down. Z nearly matches Y on action governance and handles mobile better (2x2 tiles), but it exposes MRNs in every queue row and groups by status only, so an overdue escalated alert sinks to the bottom. X has the best triage grouping (overdue first regardless of status) and a good mobile ward carousel. Its acknowledge action is a single click with no impact preview, and its success receipt has no timestamp. Overall Y ranks slightly ahead of X and Z, which are close to each other."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Queue is the dominant surface, split into 'Needs attention' (overdue, or open and unowned/critical/due soon) and 'Being handled', so the overdue escalated AL-2031 stays near the top. The detail pane is subordinate and has a placeholder when nothing is selected (AlertQueue.tsx, primary-1440.png).",
+  "domain_adaptation": "Capacity board with 'Short N beds' / 'Needs N discharges' pressure labels and handoff 'held for' durations suit bed-flow coordination. The patient ref appears only in the detail facts, not in queue rows.",
+  "contract_preservation": "No src/api or src/mock changes. /alerts and /alerts/:id are kept as nested routes. alert-row and ward-filter still exist, the original test passes unmodified, and the server ward/urgency filters are used.",
+  "interaction_state": "Has skeletons, a filtered vs unfiltered empty state, an error with Retry, 404, a 'showing last loaded' notice on refresh failure, 409 'Load latest' that keeps input, 403 text and a viewer read-only notice. The success notice has no timestamp, and the partial scenario gets no distinct treatment.",
+  "responsive": "No overflow at any width. At 375 the ward cards become a scroll-snap carousel and the queue comes first. Below 960 the detail replaces the queue and gets a back link. At 1024 the sticky detail pane clips the handoff history into an inner scroll.",
+  "accessibility": "axe is clean: 29/29 focus-visible stops, a skip link, 44px targets, and urgency shown with a glyph plus text. The Acknowledge/Escalate switch uses role=tab without arrow-key tablist behaviour.",
+  "visual_consistency": "Calm teal palette and consistent badges. Queue rows are bordered cards rather than a dense list, but they read as a queue, not a card wall.",
+  "maintainability": "Small focused components, and useResource/useNow hooks that drop superseded responses. Triage thresholds are centralised in lib/ops.ts.",
+  "ai_governance": "Escalate requires a target and a reason and the button names the target. Acknowledge fires in one click with no impact preview, and the receipt ('You are now the owner') has no server timestamp."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "capacity strip + triage queue + inspector (master-detail)",
+  "justified_patterns": [
+   "ward capacity cards that double as a ward filter",
+   "Needs attention / Being handled grouping",
+   "inline inspector with an ownership box and handoff timeline",
+   "filters kept in the URL"
+  ],
+  "suspicious_patterns": [
+   "ward stat cards resemble a KPI row, though each carries a task-relevant pressure label and filters the queue"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": false,
+  "success_receipt": true,
+  "confirmation": false,
+  "recovery": true
+ },
+ "strengths": [
+  "attention grouping that surfaces the overdue escalated alert",
+  "409 recovery that keeps the user's input",
+  "queue and ward cards refresh after a mutation",
+  "the scroll-snap ward carousel keeps the queue high on mobile"
+ ],
+ "defects": [
+  "acknowledge has no impact or confirmation step",
+  "the success receipt has no timestamp",
+  "role=tab without arrow-key tablist semantics",
+  "the handoff history is clipped inside the sticky pane at 1024"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 1.8902940000000001,
+  "num_turns": 33,
+  "wall_seconds": 452
+ },
+ "score_py": {
+  "score": 82.0,
+  "verdict": "REVIEW"
+ }
+}

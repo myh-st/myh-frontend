@@ -1,0 +1,125 @@
+{
+ "case": "hr-onboarding",
+ "variant": "myh-v1",
+ "skill_version": "v1 (original)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 4,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three keep the HR contract intact (no src/api or src/mock edits, selectors kept, allowedActions-driven gating) and build a checklist-first hire workspace with dependency reasons, partial-vault handling and stale-version recovery. Y has the most complete governed-action behaviour: dialogs that state the effect for approve, reject, resolve and request-info, versioned receipts, and error copy that separates a loading failure from empty data. Its weaknesses are overlapping text in the 375px list cards and approvals placed below the long checklist. Z comes close: inline confirmations, keyed mutation errors, and the best mobile recomposition (decisions first). It is let down by a start-date-first hire list, zero counts shown while loading or after an error, a KPI-tile row, and a heuristic that can misattribute 'Your next step'. X has the strongest checklist ordering and PII restraint, plus excellent focus styling. However, it executes approvals with a single click and no confirmation (flagged unsafe_mutation), overflows at 768px, and gives almost no success receipts."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Z",
+ "scorer_rationale": {
+  "task_hierarchy": "The hire header has a 'Needs attention' block with specific items ('Your decision: …', named blocked tasks). Below 1100px, CSS reorders the page so approvals and issues come before the checklist. However, the hires list sorts by start date first (bySeverityThenStart actually compares startDate first), so the Completed hire Liam O'Connor is the first row.",
+  "domain_adaptation": "Checklist with dependencies and blocker reasons, an Open/Mine view and approvals in the side column. Manager cards show 'Your next step' and an 'Open onboarding' button. The manager page adds a three-tile KPI row (New hires / Need attention / Waiting on you). PII is hidden until revealed.",
+  "contract_preservation": "No contract files changed and the selectors are kept. The status filter is local. Controls are gated on allowedActions plus a presentation-only helper for owner and approver.",
+  "interaction_state": "Covers skeleton loading, empty/no-match with a clear button, 403/404/error notices with retry, partial vault, a conflict banner that disables controls, per-control errors, 'Saving…' per row, an 8s toast receipt with the version, and inline confirmation for approvals. The status chips show 'All 0 Blocked 0 …' while loading and on error (primary:slow/error scenario text), which reads as if there are no hires.",
+  "responsive": "No overflow at any width. Stacked cards below 860px, the nav wraps on phones, and decisions come before the checklist on narrow screens. The manager page is phone-first with full-width actions.",
+  "accessibility": "Skip link, focus moved to the confirm heading, aria-invalid and aria-describedby, labelled checkboxes ('Mark “…” done'), icon plus text badges. Axe reports 1 serious color-contrast violation on the primary page. Selects rely on box-shadow for focus. The aside uses display:contents on narrow screens, which risks losing its landmark.",
+  "visual_consistency": "Polished and consistent, with a light shell, stroke icons and a brand 'A' mark. The KPI tiles on the manager page are a slightly generic touch, but the page stays calm overall.",
+  "maintainability": "useHireMutation (keyed pending/error, conflict, receipt) is a good abstraction. lib/onboarding.ts centralises the rules. InlineError is reused. The sorter name contradicts what it does. 15 new tests.",
+  "ai_governance": "No AI. Approve and reject use an inline confirm that names the step and the hire, and states the consequence and that it can't be undone. A versioned receipt follows. However, ManagerCard marks any nextAction whose label starts with 'Approve:' as 'Your next step' / 'You' regardless of approver (ManagerPage.tsx `next.label.startsWith('Approve:')`), so it can misattribute who must act."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "cohort table (start-date sorted) with filter panel -> hire record (header with attention list; issues + checklist main, approvals/docs/PII side, reordered on mobile) + KPI-topped manager cards",
+  "justified_patterns": [
+   "inline approval confirmation stating consequences",
+   "mobile reordering putting decisions first",
+   "keyed per-control mutation errors and receipts",
+   "PII reveal toggle"
+  ],
+  "suspicious_patterns": [
+   "three-tile KPI row on the manager summary",
+   "brand-mark app shell"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Only build that reorders the detail page for mobile so decisions come first",
+  "Clean mutation hook with per-control errors",
+  "Inline confirmation with explicit consequences",
+  "No overflow at any width"
+ ],
+ "defects": [
+  "Hires list is not attention-first (a completed hire is the first row)",
+  "Status counts show 0 while loading or after an error",
+  "'Approve:' heuristic can mislabel another person's approval as 'Your next step'",
+  "One axe color-contrast violation"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [
+    {
+     "id": "color-contrast",
+     "impact": "serious",
+     "nodes": 1
+    }
+   ],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 3.005500800000001,
+  "num_turns": 51,
+  "wall_seconds": 680
+ },
+ "score_py": {
+  "score": 83.0,
+  "verdict": "REVIEW"
+ }
+}

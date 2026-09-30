@@ -1,0 +1,112 @@
+{
+ "case": "hospital-operations",
+ "variant": "myh-v2",
+ "skill_version": "v2 (this PR)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 5,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds use the same domain-appropriate composition: a ward capacity strip that doubles as a filter, a grouped triage queue and an inspector. All have no contract changes, clean axe results, no overflow and GET-only loads, and none has a critical failure. Y is the most complete on governed actions and state truthfulness: two-step impact previews, timestamped server-confirmed receipts, typed failure messages, a staleness banner and careful focus management. Its weak spot is that the ward cards stack vertically on mobile and push the queue down. Z nearly matches Y on action governance and handles mobile better (2x2 tiles), but it exposes MRNs in every queue row and groups by status only, so an overdue escalated alert sinks to the bottom. X has the best triage grouping (overdue first regardless of status) and a good mobile ward carousel. Its acknowledge action is a single click with no impact preview, and its success receipt has no timestamp. Overall Y ranks slightly ahead of X and Z, which are close to each other."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Y",
+ "scorer_rationale": {
+  "task_hierarchy": "The queue has the page h1 ('Operational alerts') with a '6 need attention · 3 past due' summary, and groups alerts into Needs attention (unacknowledged or past due) and In hand. The inspector is secondary and closable.",
+  "domain_adaptation": "Ward pressure labels ('Full, queue waiting', 'Has capacity') sit beside a bed bar with hatched blocked beds. Rows carry owner, bed and due status. The patient ref appears only in detail facts ('Not patient-specific' when absent).",
+  "contract_preservation": "No contract files changed. Routes and test IDs are kept, the original test passes, and server filters are used. permittedWards filters only the ward display; the server stays authoritative.",
+  "interaction_state": "Distinct loading, empty and error states, with the error text saying the list does not reflect current status. A refresh-failure banner shows data age. 409 gives 'Reload latest' with the note kept, 403/422 each get their own message, and other failures say 'nothing was changed'. The receipt reads 'Confirmed by server at HH:MM', and a failed /me shows 'Role unknown — server will check'.",
+  "responsive": "No overflow at any width. Below 1024 the queue or detail is shown full screen. At 375 the four ward cards stack vertically and push the queue about 550px down. At 768 the ward card stat labels are cramped.",
+  "accessibility": "axe is clean with 29/29 focus-visible stops. Focus moves to the receipt or error and back to the opening button on cancel, Escape cancels, urgency and status use icon plus text, blocked beds are hatched, and escalation targets are a radio fieldset.",
+  "visual_consistency": "Restrained neutral palette with blue actions. Rows are borderless list items inside one queue panel, which keeps it calmer than card stacks.",
+  "maintainability": "Clean component split, a well-documented useResource with refresh, retry and mutate, and a custom Icon set. index.css is large (about 1500 lines).",
+  "ai_governance": "Both actions are two-step, with an explicit impact list ('You become the owner', 'ownership moves to X'), a target-named confirm button and a server-confirmed timestamped receipt."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "capacity strip + triage queue + inspector (master-detail)",
+  "justified_patterns": [
+   "impact preview before acknowledge/escalate",
+   "refresh-failure staleness banner",
+   "ward cards as a filter",
+   "Needs attention / In hand grouping",
+   "the tab title shows the attention count"
+  ],
+  "suspicious_patterns": [
+   "ward stat cards resemble a KPI row, justified by pressure labels and filtering"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": false,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "the most complete governed-action flow of the three (impact, confirm, timestamped receipt, typed failures)",
+  "focus management and Escape handling",
+  "failed load never looks like an empty queue",
+  "non-colour hatch for blocked beds"
+ ],
+ "defects": [
+  "at 375 the stacked ward cards delay the queue",
+  "cramped ward card stats at 768",
+  "wards are not refreshed after a mutation (only the queue row is patched)"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 2.7361179999999994,
+  "num_turns": 39,
+  "wall_seconds": 708
+ },
+ "score_py": {
+  "score": 88.0,
+  "verdict": "PASS"
+ }
+}

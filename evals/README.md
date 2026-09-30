@@ -59,4 +59,11 @@ Thresholds:
 python evals/score.py evals/results/<result>.json
 ```
 
-6. Compare recurring failure modes rather than optimizing for one screenshot.\n\n## Claude Code portability run\n\nUse [`CLAUDE_CODE_VALIDATION_PROMPT.md`](CLAUDE_CODE_VALIDATION_PROMPT.md) from a clean Claude Code session to run skill discovery, activation, A/B cross-domain evaluation, overfitting analysis, regression reruns, and PR creation.
+6. Compare recurring failure modes rather than optimizing for one screenshot.
+
+## Claude Code portability run
+
+Use [`CLAUDE_CODE_VALIDATION_PROMPT.md`](CLAUDE_CODE_VALIDATION_PROMPT.md) from a clean Claude Code session to run skill discovery, activation, A/B cross-domain evaluation, overfitting analysis, regression reruns, and PR creation.
+
+Latest results: [`results/claude/REPORT.md`](results/claude/REPORT.md). The runnable fixtures and harness are in [`claude-harness/`](claude-harness/).
+

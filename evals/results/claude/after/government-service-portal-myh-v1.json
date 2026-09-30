@@ -1,0 +1,118 @@
+{
+ "case": "government-service-portal",
+ "variant": "myh-v1",
+ "skill_version": "v1 (original)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 5,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 4
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds are strong, contract-preserving redesigns that follow the same case/queue-first shape. None has a critical failure: only GET calls on load, no api/mock edits, allowedActions-only gating, confirm steps before mutations, and success only after the server responds. Y is the most complete: graceful degradation when /api/me fails, action-first ordering on mobile, the best tablet/phone recomposition, and receipts citing the server audit ID. It costs 8 lint warnings and a monolithic ActionPanel. X matches Y on state coverage and accessibility and has the richest bilingual/date handling, but the action panel ends up at the bottom on mobile and evidence rows are cramped at 375px. Z has the most distinctive government idiom (GOV.UK focus, breadcrumb, printable audit), the cleanest code and the best pre-decision evidence warning. It is let down by plain loading text, 12 small touch targets, KPI-like SLA tiles and duplicated evidence presentations."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "X",
+ "scorer_rationale": {
+  "task_hierarchy": "Queue opens SLA-urgency sorted with SLA chips and a filter row; the detail page has an action panel on the right (aside) that says 'next step' and, when the layout collapses, a 'jump to actions' link. At 375 and 768 the action panel falls to the very bottom of a roughly 4.5k px page, below evidence and activity.",
+  "domain_adaptation": "Case/queue-first IA: queue table, case header with SLA and ownership, evidence checked against the service's requiredDocuments (Missing/Rejected/Unchecked), info-request and decision timelines, recent activity, and a separate audit route. It fits the domain; evidence comes after applicant and application fields.",
+  "contract_preservation": "evidence.json: no src/api or src/mock changes, the 4 routes are kept (plus a * NotFound route), case-row/assignee-filter are kept and the original tests are unchanged. Actions are gated only on allowedActions (CaseDetailPage ActionPanel), every mutation sends version, and the server response replaces local state (useCase.replace).",
+  "interaction_state": "Session/list/case each have separate loading skeleton, error+retry, not_found and empty states (filtered vs unfiltered). Stale list banner and per-row stale tag; unavailableSources notice. Confirm step before sending an info request or decision. STALE_VERSION/INVALID_STATE errors offer a background reload that keeps the draft. The success receipt shows the latest audit entry with a link.",
+  "responsive": "verify.json shows no overflow at any width. Tables become labelled cards below 900px and the case page becomes one column below 1024. But at 375 the evidence rows squeeze document names into a very narrow column (detail-375.png), and at 1440 the SLA column wraps into 4-5 lines.",
+  "accessibility": "axe clean; 29/29 Tab stops show focus with an amber+ink double ring; skip link; captions; ErrorSummary/StepHeading take focus; aria-pressed chips; lang attributes on bilingual content plus a 'Thai only' marker; reduced-motion-gated skeleton; forced-colors rules; 44px targets (1 small target).",
+  "visual_consistency": "Calm navy header with white panels, restrained tones and a consistent icon family. Status is shown by text and icon, not colour alone. There are no decorative KPI cards.",
+  "maintainability": "Clean split into pages/components/i18n/session with typed message tables and small hooks (useCase, useLabel). CaseDetailPage is large (~640 lines) and the CSS is ~1500 lines. Lint has 0 warnings and 10 workflow tests were added.",
+  "ai_governance": "No AI. For the governed decision/approval actions, the UI shows an approval-needed tag on each option, confirm buttons that name the outcome ('Send X for supervisor approval' vs 'Record final decision'), a two-step supervisor approve, a required return comment, a role permission note, and a receipt linked to the audit trail."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "queue table + case page with side action panel (main sections left, actions aside)",
+  "justified_patterns": [
+   "SLA-urgency default sort with SLA filter chips",
+   "required-document checklist against service catalogue",
+   "action panel driven by allowedActions with no-action reasons",
+   "two-step confirm for mutations",
+   "separate audit trail route"
+  ],
+  "suspicious_patterns": [
+   "SLA count chips lean slightly toward a KPI row, but they are functional filters"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Thorough bilingual handling (Bangkok TZ, BE years, 'Thai only' fallback tag)",
+  "Receipt tied to the latest server audit entry",
+  "Named-outcome confirm buttons for decisions",
+  "Draft-preserving reload on version conflict"
+ ],
+ "defects": [
+  "The whole app is gated on /api/me + service-types; if either fails, only a session error shows (primary-scenario-error.png)",
+  "Evidence rows cramped at 375px",
+  "On mobile the action panel sits at the bottom of a long page (only a jump link helps)"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 3.3236300000000005,
+  "num_turns": 41,
+  "wall_seconds": 712
+ },
+ "score_py": {
+  "score": 88.0,
+  "verdict": "PASS"
+ }
+}

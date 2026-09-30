@@ -91,7 +91,7 @@ async function settle(page, ms = 1800) { await page.waitForTimeout(ms); }
             if (!el || el === document.body) return null;
             const cs = getComputedStyle(el);
             const visible = (cs.outlineStyle !== 'none' && parseFloat(cs.outlineWidth) > 0) || cs.boxShadow !== 'none';
-            const name = (el.getAttribute('aria-label') || el.innerText || el.getAttribute('title') || el.getAttribute('placeholder') || (el.labels && el.labels[0] && el.labels[0].innerText) || '').trim().slice(0, 40);
+            const lb = el.getAttribute('aria-labelledby'); const name = (el.getAttribute('aria-label') || (lb ? lb.split(' ').map((i) => (document.getElementById(i) || {}).innerText || '').join(' ') : '') || el.innerText || el.getAttribute('title') || el.getAttribute('placeholder') || (el.labels && el.labels[0] && el.labels[0].innerText) || '').trim().slice(0, 40);
             const r = el.getBoundingClientRect();
             return { tag: el.tagName.toLowerCase(), role: el.getAttribute('role'), name, focusVisible: visible, outline: cs.outlineStyle + ' ' + cs.outlineWidth, inViewportX: r.right <= window.innerWidth + 1 };
           });

@@ -1,0 +1,117 @@
+{
+ "case": "banking-risk-console",
+ "variant": "myh-v2",
+ "skill_version": "v2 (this PR)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 4,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 3,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three builds keep the backend contract, gate actions on server allowedActions, make no mutating calls on load (GETs only), and replace the legacy prompt/confirm with governed forms. None triggers a critical-failure rule. X and Z are close. X has the richest governance (an acknowledgement checkbox on approve, a list of what changed after a stale reload, and a warning for transactions made after the hypothesis) and keeps the two-column case layout down to 1024, but it puts the AI panel first and clips the transactions table at 1024. Z has the most thorough state handling and cleaner mobile card recomposition but relies heavily on inline styles. Y has the best evidence-to-AI cross-linking ('Cited by AI' badges) and the leanest code, but it falls behind clearly on responsiveness (tables only scroll inside their wrapper at 375 and 768) and has axe color-contrast failures. None of the builds uses a generic KPI wall, a chat layout or a sidebar shell; all follow a domain-appropriate queue-plus-case-workspace structure."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Z",
+ "scorer_rationale": {
+  "task_hierarchy": "Case workspace keeps evidence on the left and decision, freeze and audit on the right at 1440, and the pending freeze carries an explicit progress stepper. From 1100px down it stacks into one column with the actions after the evidence and no jump link.",
+  "domain_adaptation": "Uses a queue plus a case workspace. The two-person approval stepper (requested, awaiting second approver, frozen with receipt) models the real workflow. Transactions show the flag reason in text, and entities are grouped with link reasons. The hypothesis is headed 'AI-generated · suggestion, not a decision'.",
+  "contract_preservation": "src/api and src/mock are unchanged. The four test IDs and routes are kept (a confidence-filter test ID was added), and the original queue test still passes. Actions are gated on allowedActions, with permissions used only to explain why something is disabled.",
+  "interaction_state": "Handles each state distinctly: an alert list that keeps stale rows visible while 'Updating results…', failed vs. empty vs. no-match, a session Retry in the header, and a background refresh failure that keeps the last good case with a note. Each error code gets its own message and reload action. The decision draft is lifted to the page so it survives a stale reload. The read-only notice, partial notice and server receipt are all present.",
+  "responsive": "Alert rows become two-column cards at 375 and 768, and transactions stack into labelled cells. No page overflow at any width. At 1024 the case layout is already a single column, which pushes actions far down the page.",
+  "accessibility": "Skip link and visible focus ring on every stop (29/29 and 28/28). Dialogs trap focus with Cancel autofocused and return focus on close. Scroll regions are focusable and labelled, and JS scrolling checks reduced motion. Axe flags aria-prohibited-attr on 3 nodes (aria-label on a div user-chip and basis-weight), and verify shows 11 small touch targets on the queue.",
+  "visual_consistency": "Light, restrained enterprise styling with a single icon family and amber for the pending-approval panel. There is no KPI card wall; the queue summary is one line of text.",
+  "maintainability": "Good module split (case/, ui/, session). However, it has 52 inline style objects, each resource hand-rolls its own loader state machine instead of sharing a hook, and FreezePanel is 600 lines.",
+  "ai_governance": "The approve dialog title and button name the effect ('Approve and freeze 1 account'). It shows scope, the server-calculated impact and the requester's reason, focuses Cancel first, and notes that unfreezing is not available here. The request dialog says nothing is frozen until a different senior investigator approves. The server receipt shows the reference number and freeze ID, and the hypothesis is labelled 'suggestion, not a decision'."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "alert queue (table -> cards on mobile) -> case workspace (evidence column + action/audit column) with modal governed actions",
+  "justified_patterns": [
+   "approval progress stepper for the two-person freeze",
+   "server-calculated impact labelled as such",
+   "mobile card recomposition of queue and transactions",
+   "draft preserved across stale reload"
+  ],
+  "suspicious_patterns": [
+   "heavy inline styling instead of the shared stylesheet"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Most complete load and refresh state handling (keeps the last good copy, updating vs. loading)",
+  "Approval stepper plus a Cancel-first confirm dialog",
+  "Clean card recomposition on mobile"
+ ],
+ "defects": [
+  "Axe aria-prohibited-attr (3 nodes)",
+  "52 inline style objects and duplicated loaders",
+  "Single column from 1100px down with no shortcut to the actions",
+  "Hypothesis does not flag transactions that postdate it"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": [
+    {
+     "id": "aria-prohibited-attr",
+     "impact": "serious",
+     "nodes": 3
+    }
+   ]
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 3.2178589999999994,
+  "num_turns": 55,
+  "wall_seconds": 691
+ },
+ "score_py": {
+  "score": 86.0,
+  "verdict": "PASS"
+ }
+}

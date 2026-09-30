@@ -1,0 +1,118 @@
+{
+ "case": "hr-onboarding",
+ "variant": "myh-v2",
+ "skill_version": "v2 (this PR)",
+ "agent": "Claude Code 2.1.285 headless, model claude-opus-5-5",
+ "scores": {
+  "task_hierarchy": 4,
+  "domain_adaptation": 4,
+  "contract_preservation": 5,
+  "interaction_state": 5,
+  "responsive": 3,
+  "accessibility": 4,
+  "visual_consistency": 4,
+  "maintainability": 4,
+  "ai_governance": 5
+ },
+ "not_applicable": [],
+ "critical_failures": [],
+ "evidence": {
+  "skill_discovered": true,
+  "skill_invoked": true,
+  "tests_run": [
+   "pnpm lint: pass",
+   "pnpm typecheck: pass",
+   "pnpm test: pass",
+   "pnpm build: pass",
+   "playwright 375/768/1024/1440 + keyboard + reduced-motion + axe + scenarios"
+  ],
+  "screenshots": [],
+  "notes": "All three keep the HR contract intact (no src/api or src/mock edits, selectors kept, allowedActions-driven gating) and build a checklist-first hire workspace with dependency reasons, partial-vault handling and stale-version recovery. Y has the most complete governed-action behaviour: dialogs that state the effect for approve, reject, resolve and request-info, versioned receipts, and error copy that separates a loading failure from empty data. Its weaknesses are overlapping text in the 375px list cards and approvals placed below the long checklist. Z comes close: inline confirmations, keyed mutation errors, and the best mobile recomposition (decisions first). It is let down by a start-date-first hire list, zero counts shown while loading or after an error, a KPI-tile row, and a heuristic that can misattribute 'Your next step'. X has the strongest checklist ordering and PII restraint, plus excellent focus styling. However, it executes approvals with a single click and no confirmation (flagged unsafe_mutation), overflows at 768px, and gives almost no success receipts."
+ },
+ "phase": "after (3-build blind rescoring)",
+ "blind_label": "Y",
+ "scorer_rationale": {
+  "task_hierarchy": "The list puts blocked and at-risk hires first and says so in the lede. The hire page has a 'Needs attention' bar, then exceptions, then the checklist. The approval steps section sits below the 10-task checklist, including on mobile, so approvals are further down.",
+  "domain_adaptation": "Workflow-first: tasks link to the tasks they depend on, show 'Waiting on …' lock reasons and link to their approval step. A missing-info exception links to 'Ask the new hire for it'. The manager summary is grouped into Needs attention / On track / collapsed Completed, with 'Your next step' matched by owner name. PII is collapsed in a <details> labelled sensitive, but is shown to every role.",
+  "contract_preservation": "No contract files changed and the selectors are kept. Status filtering is done on the client over the server's list (the contract still allows it). Unknown routes redirect to /hires. Controls are gated on allowedActions.",
+  "interaction_state": "Covers skeleton loading, an error state that says 'loading problem, not missing data', distinct 403/404 states, the read-only notice, the partial vault message and a conflict banner with 'Load latest'. A success receipt with the new record version appears only after the server responds. Approve, reject, resolve and request-info each go through a dialog. Status-chip counts are hidden until the data loads.",
+  "responsive": "No page overflow at any width. The table becomes cards below 900px and dialogs become bottom sheets on phones. However, at 375 the list cards have overlapping text: the relative start date runs into the manager name (e.g. 'Starts in 12 days' over 'Mei Lin Tan' in primary-375.png).",
+  "accessibility": "Has a skip link. The Dialog has a focus trap, Escape to close and returns focus to the opener. Fields use aria-invalid and aria-describedby, and the table has a caption. Axe is clean. Selects rely on a box-shadow focus ring (outline none). Status uses icon plus text.",
+  "visual_consistency": "Polished, calm SaaS styling with one consistent stroke-icon set and restrained colour. Enterprise-appropriate.",
+  "maintainability": "Reusable Dialog, Icon, Section, Notice and ErrorState primitives. A typed useResource and a single mutate() handle receipts and conflicts. Checklist, approvals, exceptions and documents are split into files. 16 new tests.",
+  "ai_governance": "No AI. The approval dialog names the hire, the task and the effect ('task becomes Blocked…/marked Done…'), and says the decision is recorded with the approver's name. The resolve dialog explains that the change removes a blocker and does not touch tasks. A versioned receipt follows."
+ },
+ "critical_failure_evidence": {},
+ "overfitting": {
+  "dominant_ia": "severity-sorted cohort table with status chips -> hire record (attention bar, exceptions, checklist, approvals main; docs + PII side) + grouped manager list",
+  "justified_patterns": [
+   "confirmation dialogs stating effect for approvals and resolutions",
+   "versioned save receipts",
+   "clickable dependency links and lock reasons",
+   "Needs attention / On track / Completed grouping for managers"
+  ],
+  "suspicious_patterns": [
+   "generic SaaS polish (pill chips, stroke icons), but not overfitted: no KPI tiles, hero or chat"
+  ]
+ },
+ "states_observed": {
+  "loading": true,
+  "empty": true,
+  "error": true,
+  "permission": true,
+  "stale": true,
+  "partial": true,
+  "success_receipt": true,
+  "confirmation": true,
+  "recovery": true
+ },
+ "strengths": [
+  "Most complete governed-action flow (effect-stating dialogs plus receipts)",
+  "Error copy separates a loading failure from empty data",
+  "Accessible modal implementation",
+  "Graceful degradation when /api/me fails"
+ ],
+ "defects": [
+  "Overlapping text in mobile hire cards at 375",
+  "Approvals section sits below the long checklist on every width",
+  "Dialog closes on STALE_VERSION, losing the typed comment",
+  "PII is available (collapsed) to managers and viewers"
+ ],
+ "objective_checks": {
+  "axe": {
+   "primary": [],
+   "detail": []
+  },
+  "horizontal_overflow": {
+   "primary": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "detail": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   },
+   "extra0": {
+    "375": false,
+    "768": false,
+    "1024": false,
+    "1440": false
+   }
+  },
+  "non_get_on_load": [],
+  "backend_contract_files_changed": []
+ },
+ "session": {
+  "cost_usd": 2.7526478000000005,
+  "num_turns": 48,
+  "wall_seconds": 650
+ },
+ "score_py": {
+  "score": 85.0,
+  "verdict": "PASS"
+ }
+}
